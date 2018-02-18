@@ -17,7 +17,7 @@ import java.io.IOException;
 public class SoundManager {
     private static SoundManager instance;
     private SoundPool soundPool;
-    private MediaPlayer myMediaPlayer ;
+    private MediaPlayer mediaPlayer ;
     private boolean mute;
     int menu = -1;
     int explosion = -1;
@@ -53,7 +53,8 @@ public class SoundManager {
             Log.e("error", "failed to load sound files");
         }
         //Media
-        myMediaPlayer = new MediaPlayer();
+        mediaPlayer = MediaPlayer.create(context, R.raw.ambient);
+
     }
 
 
@@ -73,6 +74,21 @@ public class SoundManager {
         }
     }
 
+    public void playMusic()
+    {
+        if(!isMute())
+        {
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+
+        }
+    }
+
+    public void releasePlayer()
+    {
+        mediaPlayer.release();
+        mediaPlayer = null;
+    }
     public boolean isMute() {
         return mute;
     }

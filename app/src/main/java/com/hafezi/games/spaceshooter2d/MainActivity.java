@@ -21,6 +21,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         soundManager = SoundManager.getInstance(this);
+        soundManager.playMusic();
         playButton = (Button)findViewById(R.id.playButton);
         tutorialButton = (Button)findViewById(R.id.tutorialButton);
         highscoreButton = (Button)findViewById(R.id.scoreButton);
@@ -41,6 +42,7 @@ public class MainActivity extends Activity {
     // If the player hits the back button, quit the app
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            soundManager.releasePlayer();
             finish();
             return true;
         }
@@ -64,6 +66,7 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 soundManager.playSound("menu");
                 exitButton.setBackgroundResource(R.drawable.yellow_button);
+                soundManager.releasePlayer();
                 finish();
             }
         });
