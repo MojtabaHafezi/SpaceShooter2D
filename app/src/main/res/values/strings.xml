@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SpaceShooter2D</string>
+    <string name="playText">Play</string>
+    <string name="scoreText">Highscore</string>
+    <string name="tutorialText">Tutorial</string>
+    <string name="exitText">Exit</string>
 </resources>
