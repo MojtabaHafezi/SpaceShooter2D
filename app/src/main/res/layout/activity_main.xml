@@ -39,6 +39,7 @@
             android:padding="5dp"
             android:src="@drawable/blue_button"
             android:text="@string/playText"
+            android:textColor="@android:color/black"
             android:textSize="35sp" />
 
 
@@ -51,6 +52,7 @@
             android:fontFamily="@font/space"
             android:src="@drawable/blue_button"
             android:text="@string/scoreText"
+            android:textColor="@android:color/black"
             android:textSize="35sp" />
 
         <Button
@@ -62,6 +64,7 @@
             android:fontFamily="@font/space"
             android:src="@drawable/blue_button"
             android:text="@string/tutorialText"
+            android:textColor="@android:color/black"
             android:textSize="35sp" />
 
         <Button
@@ -73,6 +76,7 @@
             android:fontFamily="@font/space"
             android:src="@drawable/blue_button"
             android:text="@string/exitText"
+            android:textColor="@android:color/black"
             android:textSize="35sp" />
     </LinearLayout>
 </android.widget.RelativeLayout>
