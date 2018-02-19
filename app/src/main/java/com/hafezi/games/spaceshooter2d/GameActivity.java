@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 public class GameActivity extends Activity {
 
     private GameView gameView;
+    private SoundManager soundManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,8 @@ public class GameActivity extends Activity {
         Display display = getWindowManager().getDefaultDisplay();
         Point point = new Point();
         display.getSize(point);
+        soundManager = SoundManager.getInstance(this);
+        soundManager.playMusic();
 
         gameView = new GameView(GameActivity.this, point.x, point.y);
         //setContentView(R.layout.activity_game);
@@ -31,12 +34,14 @@ public class GameActivity extends Activity {
     protected void onPause() {
         super.onPause();
         gameView.pause();
+        soundManager.stopMusic();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         gameView.resume();
+        soundManager.playMusic();
     }
 
     // If the player hits the back button, quit the app

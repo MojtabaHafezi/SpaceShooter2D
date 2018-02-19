@@ -16,14 +16,18 @@ import java.io.IOException;
 //using the Singleton pattern
 public class SoundManager {
     private static SoundManager instance;
+    private Context context;
     private SoundPool soundPool;
-    private MediaPlayer mediaPlayer ;
+    private MediaPlayer mediaPlayer;
+    //keep track where mediaplayer stopped
+    private int length;
     private boolean mute;
     int menu = -1;
     int explosion = -1;
     int hit = -1;
 
     private SoundManager(Context context) {
+        this.context = context;
         loadSound(context);
     }
 
@@ -74,21 +78,38 @@ public class SoundManager {
         }
     }
 
-    public void playMusic()
-    {
-        if(!isMute())
+    public void playMusic() {
+        if(isMute())
+            return;
+        if(mediaPlayer ==  null || !mediaPlayer.isPlaying())
         {
+            mediaPlayer = MediaPlayer.create(this.context, R.raw.ambient);
             mediaPlayer.setLooping(true);
+            if(length > 0)
+            {
+                mediaPlayer.seekTo(length);
+            }
             mediaPlayer.start();
-
         }
     }
 
-    public void releasePlayer()
-    {
-        mediaPlayer.release();
-        mediaPlayer = null;
+    public void stopMusic() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+             length = mediaPlayer.getCurrentPosition();
+        } else
+            length = 0;
     }
+
+    public void releasePlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+            length = 0;
+        }
+
+    }
+
     public boolean isMute() {
         return mute;
     }

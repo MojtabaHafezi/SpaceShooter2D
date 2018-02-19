@@ -10,11 +10,11 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-     Button playButton;
-     Button tutorialButton;
-     Button highscoreButton;
-     Button exitButton;
-     private SoundManager soundManager ;
+    Button playButton;
+    Button tutorialButton;
+    Button highscoreButton;
+    Button exitButton;
+    private SoundManager soundManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +22,10 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         soundManager = SoundManager.getInstance(this);
         soundManager.playMusic();
-        playButton = (Button)findViewById(R.id.playButton);
-        tutorialButton = (Button)findViewById(R.id.tutorialButton);
-        highscoreButton = (Button)findViewById(R.id.scoreButton);
-        exitButton = (Button)findViewById(R.id.exitButton);
+        playButton = (Button) findViewById(R.id.playButton);
+        tutorialButton = (Button) findViewById(R.id.tutorialButton);
+        highscoreButton = (Button) findViewById(R.id.scoreButton);
+        exitButton = (Button) findViewById(R.id.exitButton);
 
         //Set the Listeners
         setButtonListeners();
@@ -35,8 +35,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        soundManager.playMusic();
         //reset the background images of the buttons
         resetButtons();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        soundManager.stopMusic();
     }
 
     // If the player hits the back button, quit the app
@@ -49,14 +56,13 @@ public class MainActivity extends Activity {
         return false;
     }
 
-    private void setButtonListeners()
-    {
+    private void setButtonListeners() {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 soundManager.playSound("menu");
                 playButton.setBackgroundResource(R.drawable.yellow_button);
-                Intent i = new Intent(MainActivity.this, GameActivity.class );
+                Intent i = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(i);
             }
         });
@@ -94,8 +100,7 @@ public class MainActivity extends Activity {
     }
 
 
-    private void resetButtons()
-    {
+    private void resetButtons() {
         playButton.setBackgroundResource(R.drawable.blue_button);
         highscoreButton.setBackgroundResource(R.drawable.blue_button);
         tutorialButton.setBackgroundResource(R.drawable.blue_button);
