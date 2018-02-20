@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.os.Debug;
+import android.util.Log;
 
 import java.util.Random;
 
@@ -21,6 +23,7 @@ public abstract class GameObject {
     private int x, y;
     private int minY, maxY;
     private int minX, maxX;
+    private int screenX, screenY;
 
     Random random;
     //collision box
@@ -136,5 +139,49 @@ public abstract class GameObject {
         int resourceId = getContext().getResources().getIdentifier(bitmapName, "drawable", getContext().getPackageName());
         Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resourceId);
         this.bitmap = bitmap;
+        scaleBitmap();
     }
+
+    public int getScreenY() {
+        return screenY;
+    }
+
+    public void setScreenY(int screenY) {
+        this.screenY = screenY;
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public void setScreenX(int screenX) {
+        this.screenX = screenX;
+    }
+
+    //content scaling depending on different resolutions. Pixelated outcome is bad but acceptable
+    private void scaleBitmap() {
+        //picture has aspect ratio 4:3
+        int standardWidth = 1600;
+        int standardHeight = 1200;
+        int optimalWidth = standardWidth / 16;
+        int optimalHeight = standardHeight / 16;
+
+        int currentWidth = getScreenX() / 16;
+        int currentHeight = getScreenY() / 16;
+
+        float widthMultiplier =  ( (float) currentWidth / (float) optimalWidth);
+        float heightMultiplier =  ( (float) currentHeight / (float) optimalHeight);
+
+        int desiredWidth = (int) (getBitmap().getWidth() * widthMultiplier);
+        int desiredHeight = (int) (getBitmap().getHeight() * heightMultiplier);
+
+        Bitmap scaledBitmap = getBitmap();
+        scaledBitmap = Bitmap.createScaledBitmap(scaledBitmap,
+                desiredWidth, desiredHeight, false);
+        this.bitmap = scaledBitmap;
+        Log.e(getBitmap().getWidth() + "", "Should be: " + 100* widthMultiplier);
+        Log.e(getBitmap().getHeight() + "", "Should be: " + 75* heightMultiplier);
+
+    }
+
 }

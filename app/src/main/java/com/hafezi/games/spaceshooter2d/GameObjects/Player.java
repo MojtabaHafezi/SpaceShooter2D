@@ -1,6 +1,7 @@
 package com.hafezi.games.spaceshooter2d.GameObjects;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 /**
@@ -13,11 +14,13 @@ public class Player extends GameObject {
 
     public Player(Context context, int startX, int startY, int speed, int screenX, int screenY) {
         setContext(context);
-        prepareBitmap("player");
+        setScreenX(screenX);
+        setScreenY(screenY);
         setX(startX);
         setY(startY);
         setSpeed(speed);
         setShields(2);
+        prepareBitmap("player");
         setMinY(0 + getBitmap().getHeight());
         setMinX(0);
         setMaxX(screenX - getBitmap().getWidth());
@@ -25,6 +28,7 @@ public class Player extends GameObject {
         setWidth(getBitmap().getWidth());
         setHeight(getBitmap().getHeight());
         setHitbox(new Rect(getX(), getY(), getWidth(), getHeight()));
+
     }
 
     @Override
@@ -39,4 +43,6 @@ public class Player extends GameObject {
     public void setShields(int shields) {
         this.shields = shields;
     }
+
+
 }
