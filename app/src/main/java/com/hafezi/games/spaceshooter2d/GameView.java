@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.hafezi.games.spaceshooter2d.GameObjects.Player;
+
 import java.io.IOException;
 
 /**
@@ -21,18 +23,25 @@ import java.io.IOException;
 //View for the main game since everything needs to be drawn on screen
 public class GameView extends SurfaceView implements Runnable {
 
-    volatile  boolean playing;
+    volatile boolean playing;
     Thread gameThread = null;
-
     private SoundManager soundManager;
+
+
+    //Game objects
+    private Player player;
 
 
     //Attributes req. for drawing
     private Canvas canvas;
     private Paint paint;
     private SurfaceHolder surfaceHolder;
+    private Context context;
     private int screenX;
     private int screenY;
+
+    //Game relevant attributes
+    private boolean gameOver;
 
     public GameView(Context context) {
         super(context);
@@ -40,56 +49,45 @@ public class GameView extends SurfaceView implements Runnable {
 
     public GameView(Context context, int screenX, int screenY) {
         super(context);
+        setContext(context);
         resume();
         paint = new Paint();
         surfaceHolder = getHolder();
-        soundManager =  SoundManager.getInstance(context);
+        soundManager = SoundManager.getInstance(context);
 
         setScreenX(screenX);
         setScreenY(screenY);
-        /*
-        setContext(context);
-        //Sound
-        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        try {
-            //loading the ogg files into the corresponding attributes
-            AssetManager assetManager = context.getAssets();
-            AssetFileDescriptor assetFileDescriptor;
+        initialiseGame();
+    }
 
-            assetFileDescriptor = assetManager.openFd("start.ogg");
-            start = soundPool.load(assetFileDescriptor, 0);
-            assetFileDescriptor = assetManager.openFd("win.ogg");
-            win = soundPool.load(assetFileDescriptor, 0);
-            assetFileDescriptor = assetManager.openFd("bump.ogg");
-            bump = soundPool.load(assetFileDescriptor, 0);
-            assetFileDescriptor = assetManager.openFd("destroyed.ogg");
-            destroyed = soundPool.load(assetFileDescriptor, 0);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("sound error", "Error while loading sound files");
-        }
-        startGame();
-        */
+    public void initialiseGame() {
+        setGameOver(false);
+        player = new Player(getContext(), 0, 0, 2, getScreenX(), getScreenY());
     }
 
     @Override
     public void run() {
-        while(isPlaying())
-        {
+        while (isPlaying()) {
             control();
             draw();
         }
     }
 
-    private void draw()
-    {
+    private void draw() {
         //only draw if valid
         if (surfaceHolder.getSurface().isValid()) {
+            if (!isGameOver()) {
+                //Lock & repaint canvas
+                canvas = surfaceHolder.lockCanvas();
+                canvas.drawColor(Color.BLACK);
 
-            //Lock & repaint canvas
-            canvas = surfaceHolder.lockCanvas();
-            canvas.drawColor(Color.BLACK);
 
+                paint.setColor(Color.WHITE);
+                //Draw player
+                canvas.drawBitmap(player.getBitmap(), player.getX(), player.getY(), paint);
+
+
+            }
 
             //unlock and post at the end
             surfaceHolder.unlockCanvasAndPost(canvas);
@@ -97,8 +95,7 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     //for fps
-    private void control()
-    {
+    private void control() {
         try {
             //control frame rate (1000/60 = ca. 17)
             gameThread.sleep(17);
@@ -107,8 +104,7 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    public void pause()
-    {
+    public void pause() {
         setPlaying(false);
         try {
             gameThread.join();
@@ -118,8 +114,7 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
-    public void resume()
-    {
+    public void resume() {
         setPlaying(true);
         gameThread = new Thread(this);
         gameThread.start();
@@ -148,5 +143,17 @@ public class GameView extends SurfaceView implements Runnable {
 
     public void setScreenY(int screenY) {
         this.screenY = screenY;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 }
