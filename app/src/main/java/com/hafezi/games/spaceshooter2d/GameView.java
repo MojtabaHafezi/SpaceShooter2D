@@ -8,11 +8,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.hafezi.games.spaceshooter2d.GameObjects.Player;
+import com.hafezi.games.spaceshooter2d.Utility.InputController;
 
 import java.io.IOException;
 
@@ -25,7 +28,6 @@ public class GameView extends SurfaceView implements Runnable {
 
     volatile boolean playing;
     Thread gameThread = null;
-    private SoundManager soundManager;
 
 
     //Game objects
@@ -43,6 +45,11 @@ public class GameView extends SurfaceView implements Runnable {
     //Game relevant attributes
     private boolean gameOver;
 
+    //utility
+    private SoundManager soundManager;
+    private InputController inputController;
+
+
     public GameView(Context context) {
         super(context);
     }
@@ -50,26 +57,43 @@ public class GameView extends SurfaceView implements Runnable {
     public GameView(Context context, int screenX, int screenY) {
         super(context);
         setContext(context);
+        setScreenX(screenX);
+        setScreenY(screenY);
+        initialiseGame();
         resume();
         paint = new Paint();
         surfaceHolder = getHolder();
         soundManager = SoundManager.getInstance(context);
 
-        setScreenX(screenX);
-        setScreenY(screenY);
-        initialiseGame();
+        inputController = new InputController(screenX, screenY);
+
     }
 
     public void initialiseGame() {
         setGameOver(false);
-        player = new Player(getContext(), 0, 0, 2, getScreenX(), getScreenY());
+        setPlaying(true);
+        player = new Player(getContext(), 0, 0, 10, getScreenX(), getScreenY());
     }
 
     @Override
     public void run() {
         while (isPlaying()) {
+            update();
             control();
             draw();
+        }
+    }
+
+    private void update() {
+        if (!isGameOver()) {
+            //check for collisions
+
+
+            //update game objects
+            player.update();
+
+
+            //check for game status
         }
     }
 
@@ -118,6 +142,14 @@ public class GameView extends SurfaceView implements Runnable {
         setPlaying(true);
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (player != null) {
+            inputController.handleInput(event, player);
+        }
+        return true;
     }
 
     //GETTER AND SETTERS

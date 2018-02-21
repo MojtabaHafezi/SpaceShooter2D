@@ -139,7 +139,7 @@ public abstract class GameObject {
         int resourceId = getContext().getResources().getIdentifier(bitmapName, "drawable", getContext().getPackageName());
         Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resourceId);
         this.bitmap = bitmap;
-        scaleBitmap();
+        //scaleBitmap();
     }
 
     public int getScreenY() {
@@ -160,14 +160,16 @@ public abstract class GameObject {
 
     //content scaling depending on different resolutions. Pixelated outcome is bad but acceptable
     private void scaleBitmap() {
+        int divider = 100;
+
         //picture has aspect ratio 4:3
         int standardWidth = 1600;
         int standardHeight = 1200;
-        int optimalWidth = standardWidth / 16;
-        int optimalHeight = standardHeight / 16;
+        int optimalWidth = standardWidth / divider;
+        int optimalHeight = standardHeight / divider;
 
-        int currentWidth = getScreenX() / 16;
-        int currentHeight = getScreenY() / 16;
+        int currentWidth = getScreenX() / divider;
+        int currentHeight = getScreenY() / divider;
 
         float widthMultiplier =  ( (float) currentWidth / (float) optimalWidth);
         float heightMultiplier =  ( (float) currentHeight / (float) optimalHeight);
@@ -179,9 +181,6 @@ public abstract class GameObject {
         scaledBitmap = Bitmap.createScaledBitmap(scaledBitmap,
                 desiredWidth, desiredHeight, false);
         this.bitmap = scaledBitmap;
-        Log.e(getBitmap().getWidth() + "", "Should be: " + 100* widthMultiplier);
-        Log.e(getBitmap().getHeight() + "", "Should be: " + 75* heightMultiplier);
-
     }
 
 }
