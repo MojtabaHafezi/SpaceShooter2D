@@ -19,11 +19,11 @@ public class Player extends GameObject {
         setContext(context);
         setScreenX(screenX);
         setScreenY(screenY);
-        setX(startX);
         setY(startY);
         setSpeed(speed);
         setShields(2);
         prepareBitmap("player");
+        setX(getBitmap().getWidth()/3);
         setMinY(0);
         setMinX(0);
         setMaxX(screenX - getBitmap().getWidth());
@@ -31,15 +31,10 @@ public class Player extends GameObject {
         setWidth(getBitmap().getWidth());
         setHeight(getBitmap().getHeight());
         setHitbox(new Rect(getX(), getY(), getWidth(), getHeight()));
-
     }
 
     @Override
     public void update() {
-        Log.e("HMM", getY() + "");
-        Log.e("MoveDown", isMoveDown() + "");
-        Log.e("MoveUp", isMoveUp() + "");
-        Log.e("Y POS:", getY() + "");
         if(isMoveDown())
         {
             setY(getY()+ getSpeed());

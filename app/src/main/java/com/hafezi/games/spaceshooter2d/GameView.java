@@ -14,10 +14,13 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.hafezi.games.spaceshooter2d.GameObjects.Dust;
+import com.hafezi.games.spaceshooter2d.GameObjects.Enemy;
 import com.hafezi.games.spaceshooter2d.GameObjects.Player;
 import com.hafezi.games.spaceshooter2d.Utility.InputController;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Mojtaba Hafezi on 18.02.2018.
@@ -26,13 +29,20 @@ import java.io.IOException;
 //View for the main game since everything needs to be drawn on screen
 public class GameView extends SurfaceView implements Runnable {
 
+    //Thread related attributes
     volatile boolean playing;
     Thread gameThread = null;
 
 
     //Game objects
     private Player player;
-
+    private Enemy[] enemies;
+    private ArrayList<Dust> whiteDusts;
+    private ArrayList<Dust> yellowDusts;
+    private ArrayList<Dust> redDusts;
+    private final int WHITEDUST = 75;
+    private final int YELLOWDUST = 45;
+    private final int REDDUST = 30;
 
     //Attributes req. for drawing
     private Canvas canvas;
@@ -42,7 +52,7 @@ public class GameView extends SurfaceView implements Runnable {
     private int screenX;
     private int screenY;
 
-    //Game relevant attributes
+    //Game loop relevant attributes
     private boolean gameOver;
 
     //utility
@@ -63,8 +73,8 @@ public class GameView extends SurfaceView implements Runnable {
         resume();
         paint = new Paint();
         surfaceHolder = getHolder();
-        soundManager = SoundManager.getInstance(context);
 
+        soundManager = SoundManager.getInstance(context);
         inputController = new InputController(screenX, screenY);
 
     }
@@ -72,7 +82,27 @@ public class GameView extends SurfaceView implements Runnable {
     public void initialiseGame() {
         setGameOver(false);
         setPlaying(true);
-        player = new Player(getContext(), 0, 0, 10, getScreenX(), getScreenY());
+        player = new Player(getContext(), 10, 0, 10, getScreenX(), getScreenY());
+        enemies = new Enemy[3];
+        for (int i = 0; i < enemies.length; i++) {
+            enemies[i] = new Enemy(getContext(), getScreenX(), getScreenY());
+        }
+        whiteDusts = new ArrayList<>();
+        yellowDusts = new ArrayList<>();
+        redDusts = new ArrayList<>();
+        for (int i = 0; i < WHITEDUST; i++) {
+            Dust whiteDust = new Dust(getScreenX(), getScreenY());
+            whiteDusts.add(whiteDust);
+        }
+        for (int i = 0; i < YELLOWDUST; i++) {
+            Dust yellowDust = new Dust(getScreenX(), getScreenY());
+            yellowDusts.add(yellowDust);
+        }
+        for (int i = 0; i < REDDUST; i++) {
+            Dust redDust = new Dust(getScreenX(), getScreenY());
+            redDusts.add(redDust);
+        }
+
     }
 
     @Override
@@ -91,6 +121,18 @@ public class GameView extends SurfaceView implements Runnable {
 
             //update game objects
             player.update();
+            for (Enemy enemy : enemies) {
+                enemy.update();
+            }
+            for (Dust whiteDust : whiteDusts) {
+                whiteDust.update();
+            }
+            for (Dust yellowDust : yellowDusts) {
+                yellowDust.update();
+            }
+            for (Dust redDust : redDusts) {
+                redDust.update();
+            }
 
 
             //check for game status
@@ -106,11 +148,26 @@ public class GameView extends SurfaceView implements Runnable {
                 canvas.drawColor(Color.BLACK);
 
 
+                //Draw game objects with corresponding paint color
+                paint.setColor(Color.YELLOW);
+                for (Dust yellowDust : yellowDusts) {
+                    canvas.drawPoint(yellowDust.getX(), yellowDust.getY(), paint);
+                }
+                paint.setColor(Color.RED);
+                for(Dust redDust : redDusts)
+                {
+                    canvas.drawPoint(redDust.getX(), redDust.getY(), paint);
+                }
                 paint.setColor(Color.WHITE);
-                //Draw player
+                for (Dust whiteDust : whiteDusts) {
+                    canvas.drawPoint(whiteDust.getX(), whiteDust.getY(), paint);
+                }
+                // player
                 canvas.drawBitmap(player.getBitmap(), player.getX(), player.getY(), paint);
-
-
+                //enemy objects
+                for (Enemy enemy : enemies) {
+                    canvas.drawBitmap(enemy.getBitmap(), enemy.getX(), enemy.getY(), paint);
+                }
             }
 
             //unlock and post at the end
