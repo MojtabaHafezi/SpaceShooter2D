@@ -7,7 +7,7 @@
         android:normalScreens="true"
         android:smallScreens="false"
         android:xlargeScreens="false" />
-
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
