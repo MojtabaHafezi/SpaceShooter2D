@@ -25,6 +25,12 @@ public class SoundManager {
     int menu = -1;
     int explosion = -1;
     int hit = -1;
+    int laser = -1;
+
+    //enum for the sounds
+    public enum Sounds {
+        MENU, EXPLOSION, HIT, LASER
+    }
 
     private SoundManager(Context context) {
         this.context = context;
@@ -52,7 +58,8 @@ public class SoundManager {
             hit = soundPool.load(descriptor, 0);
             descriptor = assetManager.openFd("menu.ogg");
             menu = soundPool.load(descriptor, 0);
-
+            descriptor = assetManager.openFd("laser.ogg");
+            laser = soundPool.load(descriptor, 0);
         } catch (IOException e) {
             Log.e("error", "failed to load sound files");
         }
@@ -62,17 +69,20 @@ public class SoundManager {
     }
 
 
-    public void playSound(String sound) {
+    public void playSound(Sounds sound) {
         if (!isMute()) {
             switch (sound) {
-                case "hit":
+                case HIT:
                     soundPool.play(hit, 1, 1, 0, 0, 1);
                     break;
-                case "explosion":
+                case EXPLOSION:
                     soundPool.play(explosion, 1, 1, 0, 0, 1);
                     break;
-                case "menu":
+                case MENU:
                     soundPool.play(menu, 1, 1, 0, 0, 1);
+                    break;
+                case LASER:
+                    soundPool.play(laser,1,1,0,0,1);
                     break;
             }
         }

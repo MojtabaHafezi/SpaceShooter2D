@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                soundManager.playSound("menu");
+                soundManager.playSound(SoundManager.Sounds.MENU);
                 playButton.setBackgroundResource(R.drawable.yellow_button);
                 Intent i = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(i);
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                soundManager.playSound("menu");
+                soundManager.playSound(SoundManager.Sounds.MENU);
                 exitButton.setBackgroundResource(R.drawable.yellow_button);
                 soundManager.releasePlayer();
                 finish();
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         highscoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                soundManager.playSound("menu");
+                soundManager.playSound(SoundManager.Sounds.MENU);
                 highscoreButton.setBackgroundResource(R.drawable.yellow_button);
 
                 //start new activity
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         tutorialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                soundManager.playSound("menu");
+                soundManager.playSound(SoundManager.Sounds.MENU);
                 tutorialButton.setBackgroundResource(R.drawable.yellow_button);
 
                 //start new activity

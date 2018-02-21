@@ -1,25 +1,23 @@
 package com.hafezi.games.spaceshooter2d;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.renderscript.ScriptGroup;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.ActionMenuView;
 
 import com.hafezi.games.spaceshooter2d.GameObjects.Dust;
 import com.hafezi.games.spaceshooter2d.GameObjects.Enemy;
 import com.hafezi.games.spaceshooter2d.GameObjects.Player;
 import com.hafezi.games.spaceshooter2d.Utility.InputController;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -54,6 +52,9 @@ public class GameView extends SurfaceView implements Runnable {
 
     //Game loop relevant attributes
     private boolean gameOver;
+    long startFrameTime;
+    long timeThisFrame;
+    long lastHit;
 
     //utility
     private SoundManager soundManager;
@@ -82,6 +83,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void initialiseGame() {
         setGameOver(false);
         setPlaying(true);
+        lastHit = System.currentTimeMillis();
         player = new Player(getContext(), 10, 0, 10, getScreenX(), getScreenY());
         enemies = new Enemy[3];
         for (int i = 0; i < enemies.length; i++) {
@@ -108,15 +110,41 @@ public class GameView extends SurfaceView implements Runnable {
     @Override
     public void run() {
         while (isPlaying()) {
+            startFrameTime = System.currentTimeMillis();
+
             update();
-            control();
             draw();
+            //control the frames per seconds -> if drawing took too long skip sleep call for thread
+            timeThisFrame = System.currentTimeMillis() - startFrameTime;
+            control();
         }
     }
 
     private void update() {
+        Log.e("GAMEOVER:", isGameOver() + "");
+        Log.e("SHIELDS:", player.getShields() + "");
         if (!isGameOver()) {
+
             //check for collisions
+            boolean collisionDetected;
+            for (Enemy enemy : enemies) {
+                collisionDetected = collisionDetection(player, enemy);
+                if (collisionDetected) {
+                    //player is immune for 2 sec after a collision
+                    if (startFrameTime - lastHit >= 2000 && player.getShields() > 1) {
+                        soundManager.playSound(SoundManager.Sounds.HIT);
+                        player.setShields(player.getShields() - 1);
+                    }
+                    lastHit = System.currentTimeMillis();
+                }
+            }
+
+            //check for game status
+            if (player.getShields() <= 0) {
+                //play destroyed sound
+                soundManager.playSound(SoundManager.Sounds.EXPLOSION);
+                setGameOver(true); //gameover
+            }
 
 
             //update game objects
@@ -134,9 +162,13 @@ public class GameView extends SurfaceView implements Runnable {
                 redDust.update();
             }
 
-
-            //check for game status
+        } else {
+            Intent i = new Intent(getContext(), MainActivity.class);
+            getContext().startActivity(i);
+            Activity activity = (Activity) getContext();
+            activity.finish();
         }
+
     }
 
     private void draw() {
@@ -154,8 +186,7 @@ public class GameView extends SurfaceView implements Runnable {
                     canvas.drawPoint(yellowDust.getX(), yellowDust.getY(), paint);
                 }
                 paint.setColor(Color.RED);
-                for(Dust redDust : redDusts)
-                {
+                for (Dust redDust : redDusts) {
                     canvas.drawPoint(redDust.getX(), redDust.getY(), paint);
                 }
                 paint.setColor(Color.WHITE);
@@ -168,22 +199,37 @@ public class GameView extends SurfaceView implements Runnable {
                 for (Enemy enemy : enemies) {
                     canvas.drawBitmap(enemy.getBitmap(), enemy.getX(), enemy.getY(), paint);
                 }
+                //unlock and post at the end
+                surfaceHolder.unlockCanvasAndPost(canvas);
             }
 
-            //unlock and post at the end
-            surfaceHolder.unlockCanvasAndPost(canvas);
+
         }
     }
 
-    //for fps
+    //for constant fps
     private void control() {
         try {
-            //control frame rate (1000/60 = ca. 17)
-            gameThread.sleep(17);
+            //took too long for the operations
+            if (timeThisFrame >= 17) {
+                return;
+            } else
+                //control frame rate (1000/60 = ca. 17) - subtract the time taken for update/draw
+                gameThread.sleep(17 - timeThisFrame);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+
+    //checks for intersection between the hitboxes - used in the update method
+    private boolean collisionDetection(Player player, Enemy enemy) {
+        if (Rect.intersects(player.getHitbox(), enemy.getHitbox())) {
+            enemy.setRandomAttributes();
+            return true;
+        }
+        return false;
+    }
+
 
     public void pause() {
         setPlaying(false);
@@ -196,11 +242,14 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void resume() {
+        for (Enemy enemy : enemies)
+            enemy.setRandomAttributes();
         setPlaying(true);
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    //InputController manages events
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (player != null) {

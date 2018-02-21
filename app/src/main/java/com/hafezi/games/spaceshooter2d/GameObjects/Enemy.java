@@ -25,8 +25,7 @@ public class Enemy extends GameObject {
         String bitmapName = "enemy" + (random.nextInt(5) + 1);
         prepareBitmap(bitmapName);
         setMaxX(getScreenX());
-        setMaxY(getScreenY() - getBitmap().getHeight());
-        setX(getScreenX() - getBitmap().getWidth());
+        setMaxY(getScreenY());
         setWidth(getBitmap().getWidth());
         setHeight(getBitmap().getHeight());
         setHitbox(new Rect(getX(), getY(), getWidth(), getHeight()));
@@ -37,6 +36,7 @@ public class Enemy extends GameObject {
         int randomPosition = random.nextInt(getScreenY() - getBitmap().getHeight());
         int randomSpeed = 2 + random.nextInt(5) ;
         int randomShields = 1 + random.nextInt(3);
+        setX(getScreenX() + getBitmap().getWidth());
         setY(randomPosition);
         setSpeed(randomSpeed);
         setShield(randomShields);

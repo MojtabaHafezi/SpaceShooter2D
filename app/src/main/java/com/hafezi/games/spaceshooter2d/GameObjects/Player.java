@@ -55,9 +55,9 @@ public class Player extends GameObject {
 
         //update location of the rectangle collision hitbox with some margin
         getHitbox().left = getX();
-        getHitbox().right = getX() + getBitmap().getWidth() - getBitmap().getWidth()/6;
+        getHitbox().right = getX() + getBitmap().getWidth() - getBitmap().getWidth()/5;
         getHitbox().top = getY();
-        getHitbox().bottom = getY() + getBitmap().getHeight() - getBitmap().getHeight()/6;
+        getHitbox().bottom = getY() + getBitmap().getHeight() - getBitmap().getHeight()/5;
 
     }
 
