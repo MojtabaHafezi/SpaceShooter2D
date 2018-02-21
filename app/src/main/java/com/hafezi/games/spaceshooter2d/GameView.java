@@ -7,6 +7,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -29,7 +33,7 @@ import static android.content.Context.VIBRATOR_SERVICE;
  */
 
 //View for the main game since everything needs to be drawn on screen
-public class GameView extends SurfaceView implements Runnable {
+public class GameView extends SurfaceView implements Runnable, SensorEventListener {
 
     //Thread related attributes
     volatile boolean playing;
@@ -72,9 +76,9 @@ public class GameView extends SurfaceView implements Runnable {
     private SoundManager soundManager;
     private InputController inputController;
     private Vibrator vibrator;
-    private  long[] vibratorPattern = {300, 100, 300, 100, 600, 200, 1000};
-
-
+    private long[] vibratorPattern = {300, 100, 300, 100, 600, 200, 1000};
+    private SensorManager sensorManager;
+    private Sensor sensor;
 
     public GameView(Context context) {
         super(context);
@@ -91,14 +95,16 @@ public class GameView extends SurfaceView implements Runnable {
         surfaceHolder = getHolder();
 
         soundManager = SoundManager.getInstance(context);
-        inputController = new InputController(screenX, screenY);
         vibrator = (Vibrator) getContext().getSystemService(VIBRATOR_SERVICE);
+        sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        inputController = new InputController(screenX, screenY);
     }
 
     public void initialiseGame() {
         setGameOver(false);
         setPlaying(true);
-        lastHit = System.currentTimeMillis();
+        lastHit = 0;
         player = new Player(getContext(), 10, 0, 10, getScreenX(), getScreenY());
         setPlayerGotHit(false);
         explosions = new Explosion[5];
@@ -164,12 +170,14 @@ public class GameView extends SurfaceView implements Runnable {
             for (Enemy enemy : enemies) {
                 collisionDetected = collisionDetection(player, enemy);
                 if (collisionDetected) {
-                    //player is immune for 2 sec after a collision
                     if (player.getShields() >= 1) {
                         soundManager.playSound(SoundManager.Sounds.HIT);
                         vibrator.vibrate(200);
-                        
-                        player.setShields(player.getShields() - 1);
+                        //player is immune for 2 sec after a collision but only once
+                        if (lastHit != 0 && startFrameTime - lastHit > 1000)
+                            player.setShields(player.getShields() - 1);
+                        if (lastHit == 0)
+                            lastHit = System.currentTimeMillis();
                     }
                 }
             }
@@ -301,6 +309,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     public void pause() {
         setPlaying(false);
+        sensorManager.unregisterListener(this);
         try {
             gameThread.join();
         } catch (InterruptedException e) {
@@ -310,6 +319,8 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void resume() {
+        if (sensorManager != null)
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         for (Enemy enemy : enemies)
             enemy.setRandomAttributes();
         setPlaying(true);
@@ -325,6 +336,7 @@ public class GameView extends SurfaceView implements Runnable {
         }
         return true;
     }
+
 
     //GETTER AND SETTERS
     public boolean isPlaying() {
@@ -369,5 +381,15 @@ public class GameView extends SurfaceView implements Runnable {
 
     public void setPlayerGotHit(boolean playerGotHit) {
         this.playerGotHit = playerGotHit;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        inputController.handleSensorInput(sensorEvent, player);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }

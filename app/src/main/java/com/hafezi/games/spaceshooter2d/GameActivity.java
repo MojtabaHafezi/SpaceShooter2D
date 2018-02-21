@@ -1,7 +1,10 @@
 package com.hafezi.games.spaceshooter2d;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -14,6 +17,7 @@ public class GameActivity extends Activity {
 
     private GameView gameView;
     private SoundManager soundManager;
+    private SensorManager sensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +29,15 @@ public class GameActivity extends Activity {
         soundManager = SoundManager.getInstance(this);
         soundManager.playMusic();
 
+
         gameView = new GameView(GameActivity.this, point.x, point.y);
         //setContentView(R.layout.activity_game);
         setContentView(gameView);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
