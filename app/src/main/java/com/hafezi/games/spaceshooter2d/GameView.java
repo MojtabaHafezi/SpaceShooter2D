@@ -80,7 +80,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private SoundManager soundManager;
     private InputController inputController;
     private Vibrator vibrator;
-    private long[] vibratorPattern = {300, 100, 300, 100, 600, 200, 1000};
+    private long[] vibratorPattern = {300, 100, 300, 100, 600, 100, 1000, 100, 1000};
     private SensorManager sensorManager;
     private Sensor sensor;
 
@@ -182,10 +182,14 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                         soundManager.playSound(SoundManager.Sounds.HIT);
                         vibrator.vibrate(200);
                         //player is immune for 2 sec after a collision but only once
-                        if (lastHit != 0 && startFrameTime - lastHit > 1000)
-                            player.setShields(player.getShields() - 1);
                         if (lastHit == 0)
+                        {
                             lastHit = System.currentTimeMillis();
+                            player.setShields(player.getShields() - 1);
+                        }
+                        if ( startFrameTime - lastHit > 2000)
+                            player.setShields(player.getShields() - 1);
+
                     }
                 }
             }
@@ -253,8 +257,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 paint.setTextAlign(Paint.Align.LEFT);
                 paint.setColor(Color.CYAN);
                 paint.setTextSize(30);
-                canvas.drawText("Fastest" + fastestTime + " s", 10, 20, paint);
-                canvas.drawText("Time:" + timeTaken + " s", getScreenX() / 2, 20, paint);
+                canvas.drawText("Fastest: " + fastestTime + " s", 10, 20, paint);
+                canvas.drawText("Time: " + timeTaken + " s", getScreenX() / 2, 20, paint);
                 canvas.drawText("Shields: " + player.getShields(), 10, getScreenY() - 20, paint);
 
 
@@ -308,11 +312,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 paint.setColor(Color.CYAN);
                 canvas.drawText("GAME OVER", getScreenX() / 2, 100, paint);
                 paint.setTextSize(25);
-                canvas.drawText("Fastest" + fastestTime + " s", 10, 20, paint);
-                canvas.drawText("Time:" + timeTaken + " s", getScreenX() / 2, 20, paint);
-                canvas.drawText("Shields: " + player.getShields(), 10, getScreenY() - 20, paint);
+                canvas.drawText("Fastest: " + fastestTime + " s", getScreenX() / 2, 160, paint);
+                canvas.drawText("Time: " + timeTaken + " s", getScreenX() / 2, 200, paint);
                 paint.setTextSize(80);
-                canvas.drawText("Tap to continue!", getScreenX() / 2, 350, paint);
+                canvas.drawText("Tap to continue!", getScreenX() / 2, getScreenY()/2, paint);
 
 
 
