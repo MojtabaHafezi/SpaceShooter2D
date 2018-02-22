@@ -43,11 +43,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     //Game objects
     private Player player;
     private Explosion[] explosions;
-    private Explosion explosion1;
-    private Explosion explosion2;
-    private Explosion explosion3;
-    private Explosion explosion4;
-    private Explosion explosion5;
     private Enemy[] enemies;
     private ArrayList<Dust> whiteDusts;
     private ArrayList<Dust> yellowDusts;
@@ -81,6 +76,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private InputController inputController;
     private Vibrator vibrator;
     private long[] vibratorPattern = {300, 100, 300, 100, 600, 100, 1000, 100, 1000};
+    private boolean useSensor; //needs to be changed in option, saved and loaded properly
     private SensorManager sensorManager;
     private Sensor sensor;
 
@@ -113,6 +109,9 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         timeStarted = System.currentTimeMillis();
         //Load fastest time;
         //fastestTime = Load...
+        //Load option for sensor
+        //TODO: change default value
+        setUseSensor(false);
         player = new Player(getContext(), 10, 0, 10, getScreenX(), getScreenY());
         setPlayerGotHit(false);
         explosions = new Explosion[5];
@@ -379,6 +378,15 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         return true;
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        inputController.handleSensorInput(sensorEvent, player);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
 
     //GETTER AND SETTERS
     public boolean isPlaying() {
@@ -425,13 +433,12 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         this.playerGotHit = playerGotHit;
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        inputController.handleSensorInput(sensorEvent, player);
+
+    public boolean isUseSensor() {
+        return useSensor;
     }
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
+    public void setUseSensor(boolean useSensor) {
+        this.useSensor = useSensor;
     }
 }

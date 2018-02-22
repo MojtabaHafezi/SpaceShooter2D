@@ -56,14 +56,14 @@
             android:textSize="35sp" />
 
         <Button
-            android:id="@+id/tutorialButton"
+            android:id="@+id/optionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
             android:background="@drawable/blue_button"
             android:fontFamily="@font/space"
             android:src="@drawable/blue_button"
-            android:text="@string/tutorialText"
+            android:text="@string/optionText"
             android:textColor="@android:color/black"
             android:textSize="35sp" />
 

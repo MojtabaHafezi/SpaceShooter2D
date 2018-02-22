@@ -1,8 +1,6 @@
 package com.hafezi.games.spaceshooter2d;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -12,7 +10,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
     Button playButton;
-    Button tutorialButton;
+    Button optionButton;
     Button highscoreButton;
     Button exitButton;
     private SoundManager soundManager;
@@ -24,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         soundManager = SoundManager.getInstance(this);
         soundManager.playMusic();
         playButton = (Button) findViewById(R.id.playButton);
-        tutorialButton = (Button) findViewById(R.id.tutorialButton);
+        optionButton = (Button) findViewById(R.id.optionButton);
         highscoreButton = (Button) findViewById(R.id.scoreButton);
         exitButton = (Button) findViewById(R.id.exitButton);
 
@@ -89,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        tutorialButton.setOnClickListener(new View.OnClickListener() {
+        optionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 soundManager.playSound(SoundManager.Sounds.MENU);
-                tutorialButton.setBackgroundResource(R.drawable.yellow_button);
+                optionButton.setBackgroundResource(R.drawable.yellow_button);
 
                 //start new activity
             }
@@ -104,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private void resetButtons() {
         playButton.setBackgroundResource(R.drawable.blue_button);
         highscoreButton.setBackgroundResource(R.drawable.blue_button);
-        tutorialButton.setBackgroundResource(R.drawable.blue_button);
+        optionButton.setBackgroundResource(R.drawable.blue_button);
         exitButton.setBackgroundResource(R.drawable.blue_button);
     }
 }

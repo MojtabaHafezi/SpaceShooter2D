@@ -4,4 +4,5 @@
     <string name="scoreText">Highscore</string>
     <string name="tutorialText">Tutorial</string>
     <string name="exitText">Exit</string>
+    <string name="optionText">Options</string>
 </resources>
