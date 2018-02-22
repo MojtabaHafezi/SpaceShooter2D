@@ -71,6 +71,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     long lastHit;
     long timeForExplosion;
     private boolean playerGotHit;
+    //measures time since game loop is running + tracks record
+    private long fastestTime = 999999;
+    private long timeTaken;
+    private long timeStarted;
 
     //utility
     private SoundManager soundManager;
@@ -105,6 +109,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         setGameOver(false);
         setPlaying(true);
         lastHit = 0;
+        timeTaken = 0;
+        timeStarted = System.currentTimeMillis();
+        //Load fastest time;
+        //fastestTime = Load...
         player = new Player(getContext(), 10, 0, 10, getScreenX(), getScreenY());
         setPlayerGotHit(false);
         explosions = new Explosion[5];
@@ -182,12 +190,17 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
             }
 
+            timeTaken =  System.currentTimeMillis() - timeStarted; //add the time
+
             //check for game status
             if (player.getShields() <= 0) {
                 //play destroyed sound
                 soundManager.playSound(SoundManager.Sounds.EXPLOSION);
                 vibrator.vibrate(vibratorPattern, -1);
                 setGameOver(true); //gameover
+                if (timeTaken < fastestTime) {
+                    fastestTime = timeTaken; //new hi-score
+                }
             }
 
 
