@@ -247,6 +247,17 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 for (Enemy enemy : enemies) {
                     canvas.drawBitmap(enemy.getBitmap(), enemy.getX(), enemy.getY(), paint);
                 }
+
+                //HUD
+                //HUD
+                paint.setTextAlign(Paint.Align.LEFT);
+                paint.setColor(Color.CYAN);
+                paint.setTextSize(30);
+                canvas.drawText("Fastest" + fastestTime + " s", 10, 20, paint);
+                canvas.drawText("Time:" + timeTaken + " s", getScreenX() / 2, 20, paint);
+                canvas.drawText("Shields: " + player.getShields(), 10, getScreenY() - 20, paint);
+
+
                 //unlock and post at the end
                 surfaceHolder.unlockCanvasAndPost(canvas);
             }
@@ -290,6 +301,21 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 for (Enemy enemy : enemies) {
                     canvas.drawBitmap(enemy.getBitmap(), enemy.getX(), enemy.getY(), paint);
                 }
+
+                //GAMEOVER SCREEN
+                paint.setTextSize(80);
+                paint.setTextAlign(Paint.Align.CENTER);
+                paint.setColor(Color.CYAN);
+                canvas.drawText("GAME OVER", getScreenX() / 2, 100, paint);
+                paint.setTextSize(25);
+                canvas.drawText("Fastest" + fastestTime + " s", 10, 20, paint);
+                canvas.drawText("Time:" + timeTaken + " s", getScreenX() / 2, 20, paint);
+                canvas.drawText("Shields: " + player.getShields(), 10, getScreenY() - 20, paint);
+                paint.setTextSize(80);
+                canvas.drawText("Tap to continue!", getScreenX() / 2, 350, paint);
+
+
+
                 //unlock and post at the end
                 surfaceHolder.unlockCanvasAndPost(canvas);
             }
