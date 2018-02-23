@@ -17,7 +17,6 @@ public class GameActivity extends Activity {
 
     private GameView gameView;
     private SoundManager soundManager;
-    private SensorManager sensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,6 +1,7 @@
 package com.hafezi.games.spaceshooter2d;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.AudioManager;
@@ -27,6 +28,11 @@ public class SoundManager {
     int hit = -1;
     int laser = -1;
 
+    //persistence
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
+
     //enum for the sounds
     public enum Sounds {
         MENU, EXPLOSION, HIT, LASER
@@ -34,6 +40,13 @@ public class SoundManager {
 
     private SoundManager(Context context) {
         this.context = context;
+        // If id doesn't exist one is created
+        sharedPreferences = context.getSharedPreferences("GAME", context.MODE_PRIVATE);
+        // Initialize the editor
+        editor = sharedPreferences.edit();
+        boolean toMute = sharedPreferences.getBoolean("MUTE", false);
+        setMute(toMute);
+        setMute(false);
         loadSound(context);
     }
 
@@ -70,33 +83,32 @@ public class SoundManager {
 
 
     public void playSound(Sounds sound) {
-        if (!isMute()) {
-            switch (sound) {
-                case HIT:
-                    soundPool.play(hit, 1, 1, 0, 0, 1);
-                    break;
-                case EXPLOSION:
-                    soundPool.play(explosion, 1, 1, 0, 0, 1);
-                    break;
-                case MENU:
-                    soundPool.play(menu, 1, 1, 0, 0, 1);
-                    break;
-                case LASER:
-                    soundPool.play(laser,1,1,0,0,1);
-                    break;
-            }
+        if (isMute())
+            return;
+        switch (sound) {
+            case HIT:
+                soundPool.play(hit, 1, 1, 0, 0, 1);
+                break;
+            case EXPLOSION:
+                soundPool.play(explosion, 1, 1, 0, 0, 1);
+                break;
+            case MENU:
+                soundPool.play(menu, 1, 1, 0, 0, 1);
+                break;
+            case LASER:
+                soundPool.play(laser, 1, 1, 0, 0, 1);
+                break;
         }
+
     }
 
     public void playMusic() {
-        if(isMute())
+        if (isMute())
             return;
-        if(mediaPlayer ==  null || !mediaPlayer.isPlaying())
-        {
+        if (mediaPlayer == null || !mediaPlayer.isPlaying()) {
             mediaPlayer = MediaPlayer.create(this.context, R.raw.ambient);
             mediaPlayer.setLooping(true);
-            if(length > 0)
-            {
+            if (length > 0) {
                 mediaPlayer.seekTo(length);
             }
             mediaPlayer.start();
@@ -106,7 +118,7 @@ public class SoundManager {
     public void stopMusic() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
-             length = mediaPlayer.getCurrentPosition();
+            length = mediaPlayer.getCurrentPosition();
         } else
             length = 0;
     }
@@ -125,6 +137,8 @@ public class SoundManager {
     }
 
     public void setMute(boolean mute) {
+        editor.putBoolean("MUTE", mute);
+        editor.commit();
         this.mute = mute;
     }
 }

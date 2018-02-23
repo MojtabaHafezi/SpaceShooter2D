@@ -1,6 +1,7 @@
 package com.hafezi.games.spaceshooter2d;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -61,7 +62,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     long timeThisFrame;
     long lastHit;
     long timeForExplosion;
-    private boolean playerGotHit;
     //measures time since game loop is running + tracks record
     private long longestTime = 0;
     private long timeTaken;
@@ -75,6 +75,9 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private boolean useSensor; //needs to be changed in option, saved and loaded properly
     private SensorManager sensorManager;
     private Sensor sensor;
+    //persistence
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     public GameView(Context context) {
         super(context);
@@ -89,7 +92,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         resume();
         paint = new Paint();
         surfaceHolder = getHolder();
-
+        sharedPreferences = getContext().getSharedPreferences("GAME", context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         soundManager = SoundManager.getInstance(context);
         vibrator = (Vibrator) getContext().getSystemService(VIBRATOR_SERVICE);
         sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
@@ -103,13 +107,12 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         lastHit = 0;
         timeTaken = 0;
         timeStarted = System.currentTimeMillis();
-        //Load fastest time;
-        //longestTime = Load...
-        //Load option for sensor
-        //TODO: change default value
-        setUseSensor(true);
+        //Load score and options for sensor
+        longestTime = sharedPreferences.getLong("TIME", 0);
+        boolean usingSensor = sharedPreferences.getBoolean("SENSOR", false);
+        setUseSensor(usingSensor);
+
         player = new Player(getContext(), 10, 0, 10, getScreenX(), getScreenY());
-        setPlayerGotHit(false);
         explosions = new Explosion[5];
         for (int i = 0; i < explosions.length; i++) {
             explosions[i] = new Explosion(getContext(), screenX, screenY, "explosion" + (1 + i), 0, 0);
@@ -199,6 +202,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 setGameOver(true); //gameover
                 if (timeTaken > longestTime) {
                     longestTime = timeTaken; //new hi-score
+                    editor.putLong("TIME", longestTime);
+                    editor.commit();
                 }
             }
 
@@ -206,7 +211,9 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         } else {
             if (timeForExplosion == 0)
                 timeForExplosion = System.currentTimeMillis();
-            //start new activity, with score as parameter
+
+
+            //TODO: start new activity, with score as parameter
             /*
             Intent i = new Intent(getContext(), MainActivity.class);
             getContext().startActivity(i);
@@ -421,13 +428,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         this.gameOver = gameOver;
     }
 
-    public boolean isPlayerGotHit() {
-        return playerGotHit;
-    }
 
-    public void setPlayerGotHit(boolean playerGotHit) {
-        this.playerGotHit = playerGotHit;
-    }
 
 
     public boolean isUseSensor() {

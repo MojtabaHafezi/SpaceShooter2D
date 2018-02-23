@@ -7,76 +7,76 @@
     android:background="@drawable/background"
     tools:context="com.hafezi.games.spaceshooter2d.MainActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/logo" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="5dp">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/playButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:background="@drawable/blue_button"
-            android:fontFamily="@font/space"
-            android:padding="5dp"
-            android:src="@drawable/blue_button"
-            android:text="@string/playText"
-            android:textColor="@android:color/black"
-            android:textSize="35sp" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:src="@drawable/logo" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/playButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:background="@drawable/blue_button"
+                android:fontFamily="@font/space"
+                android:padding="5dp"
+                android:src="@drawable/blue_button"
+                android:text="@string/playText"
+                android:textColor="@android:color/black"
+                android:textSize="35sp" />
 
 
-        <Button
-            android:id="@+id/scoreButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:background="@drawable/blue_button"
-            android:fontFamily="@font/space"
-            android:src="@drawable/blue_button"
-            android:text="@string/scoreText"
-            android:textColor="@android:color/black"
-            android:textSize="35sp" />
+            <Button
+                android:id="@+id/scoreButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:background="@drawable/blue_button"
+                android:fontFamily="@font/space"
+                android:src="@drawable/blue_button"
+                android:text="@string/scoreText"
+                android:textColor="@android:color/black"
+                android:textSize="35sp" />
 
-        <Button
-            android:id="@+id/optionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:background="@drawable/blue_button"
-            android:fontFamily="@font/space"
-            android:src="@drawable/blue_button"
-            android:text="@string/optionText"
-            android:textColor="@android:color/black"
-            android:textSize="35sp" />
+            <Button
+                android:id="@+id/optionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:background="@drawable/blue_button"
+                android:fontFamily="@font/space"
+                android:src="@drawable/blue_button"
+                android:text="@string/optionText"
+                android:textColor="@android:color/black"
+                android:textSize="35sp" />
 
-        <Button
-            android:id="@+id/exitButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:background="@drawable/blue_button"
-            android:fontFamily="@font/space"
-            android:src="@drawable/blue_button"
-            android:text="@string/exitText"
-            android:textColor="@android:color/black"
-            android:textSize="35sp" />
+            <Button
+                android:id="@+id/exitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:background="@drawable/blue_button"
+                android:fontFamily="@font/space"
+                android:src="@drawable/blue_button"
+                android:text="@string/exitText"
+                android:textColor="@android:color/black"
+                android:textSize="35sp" />
+        </LinearLayout>
     </LinearLayout>
+
 </android.widget.RelativeLayout>
