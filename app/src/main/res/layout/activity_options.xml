@@ -118,7 +118,7 @@
             android:layout_weight="1"
             android:background="@drawable/blue_button"
             android:fontFamily="@font/space"
-            android:text="Save & Back"
+            android:text="Save"
             android:textColor="@android:color/black"
             android:textSize="30sp" />
     </LinearLayout>

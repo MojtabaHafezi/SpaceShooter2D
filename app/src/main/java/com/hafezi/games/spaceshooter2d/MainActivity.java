@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 soundManager.playSound(SoundManager.Sounds.MENU);
                 optionButton.setBackgroundResource(R.drawable.yellow_button);
-
-                //start new activity
+                Intent i = new Intent(MainActivity.this, OptionsActivity.class);
+                startActivity(i);
             }
         });
     }

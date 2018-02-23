@@ -9,6 +9,8 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.util.Log;
 
+import com.hafezi.games.spaceshooter2d.Utility.Pref;
+
 import java.io.IOException;
 
 /**
@@ -30,8 +32,6 @@ public class SoundManager {
 
     //persistence
     private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-
 
     //enum for the sounds
     public enum Sounds {
@@ -41,12 +41,9 @@ public class SoundManager {
     private SoundManager(Context context) {
         this.context = context;
         // If id doesn't exist one is created
-        sharedPreferences = context.getSharedPreferences("GAME", context.MODE_PRIVATE);
-        // Initialize the editor
-        editor = sharedPreferences.edit();
-        boolean toMute = sharedPreferences.getBoolean("MUTE", false);
+        sharedPreferences = context.getSharedPreferences(Pref.GAME.toString(), context.MODE_PRIVATE);
+        boolean toMute = sharedPreferences.getBoolean(Pref.AUDIO.toString(), false);
         setMute(toMute);
-        setMute(false);
         loadSound(context);
     }
 
@@ -137,8 +134,6 @@ public class SoundManager {
     }
 
     public void setMute(boolean mute) {
-        editor.putBoolean("MUTE", mute);
-        editor.commit();
         this.mute = mute;
     }
 }
