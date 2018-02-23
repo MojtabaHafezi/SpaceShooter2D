@@ -5,4 +5,6 @@
     <string name="tutorialText">Tutorial</string>
     <string name="exitText">Exit</string>
     <string name="optionText">Options</string>
+    <string name="enableText">Enabled</string>
+    <string name="disabledText">Disabled</string>
 </resources>
