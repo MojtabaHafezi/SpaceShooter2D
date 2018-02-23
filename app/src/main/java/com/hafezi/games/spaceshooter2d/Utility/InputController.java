@@ -18,35 +18,46 @@ public class InputController {
     public Rect up;
     public Rect down;
 
+    private float[] gravity = new float[]{0, 0, 0};
+    private float[] linearAcceleration = new float[]{0, 0, 0};
+    final float alpha = 0.915f;
 
     public InputController(int screenWidth, int screenHeight) {
         //divide the android screen into up and down area
         up = new Rect(0, 0, screenWidth, screenHeight / 2);
-        down = new Rect(0, (screenHeight/2 - 1), screenWidth,screenHeight);
+        down = new Rect(0, (screenHeight / 2 - 1), screenWidth, screenHeight);
 
     }
 
-    public void handleSensorInput(SensorEvent sensorEvent, Player player)
-    {
+    public void handleSensorInput(SensorEvent sensorEvent, Player player) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
-            float x = sensorEvent.values[0];
-            float y = -sensorEvent.values[1];
+            // Isolate the force of gravity with the low-pass filter.
+            gravity[0] = alpha * gravity[0] + (1 - alpha) * sensorEvent.values[0];
+            gravity[1] = alpha * gravity[1] + (1 - alpha) * sensorEvent.values[1];
+            gravity[2] = alpha * gravity[2] + (1 - alpha) * sensorEvent.values[2];
 
-            if(x >= 1)
-            {
+            // Remove the gravity contribution with the high-pass filter.
+            linearAcceleration[0] = sensorEvent.values[0] - gravity[0];
+            linearAcceleration[1] = sensorEvent.values[1] - gravity[1];
+            linearAcceleration[2] = sensorEvent.values[2] - gravity[2];
+
+
+            float x = linearAcceleration[0];
+            float y = linearAcceleration[1];
+            float z = linearAcceleration[2];
+
+            if (x >= 1) {
                 player.setMoveUp(false);
                 player.setMoveDown(true);
             }
 
-            if(x <= -1)
-            {
+            if (x <= -1) {
                 player.setMoveDown(false);
                 player.setMoveUp(true);
             }
 
-            if(x > -1 && x < 1)
-            {
+            if (x > -1 && x < 1) {
                 player.setMoveDown(false);
                 player.setMoveUp(false);
             }

@@ -1,8 +1,6 @@
 package com.hafezi.games.spaceshooter2d;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,11 +10,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.ActionMenuView;
 
 import com.hafezi.games.spaceshooter2d.GameObjects.Dust;
 import com.hafezi.games.spaceshooter2d.GameObjects.Enemy;
@@ -67,7 +63,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     long timeForExplosion;
     private boolean playerGotHit;
     //measures time since game loop is running + tracks record
-    private long fastestTime = 999999;
+    private long longestTime = 0;
     private long timeTaken;
     private long timeStarted;
 
@@ -108,10 +104,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         timeTaken = 0;
         timeStarted = System.currentTimeMillis();
         //Load fastest time;
-        //fastestTime = Load...
+        //longestTime = Load...
         //Load option for sensor
         //TODO: change default value
-        setUseSensor(false);
+        setUseSensor(true);
         player = new Player(getContext(), 10, 0, 10, getScreenX(), getScreenY());
         setPlayerGotHit(false);
         explosions = new Explosion[5];
@@ -201,8 +197,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 soundManager.playSound(SoundManager.Sounds.EXPLOSION);
                 vibrator.vibrate(vibratorPattern, -1);
                 setGameOver(true); //gameover
-                if (timeTaken < fastestTime) {
-                    fastestTime = timeTaken; //new hi-score
+                if (timeTaken > longestTime) {
+                    longestTime = timeTaken; //new hi-score
                 }
             }
 
@@ -256,7 +252,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 paint.setTextAlign(Paint.Align.LEFT);
                 paint.setColor(Color.CYAN);
                 paint.setTextSize(30);
-                canvas.drawText("Fastest: " + fastestTime + " s", 10, 20, paint);
+                canvas.drawText("Longest: " + longestTime + " s", 10, 20, paint);
                 canvas.drawText("Time: " + timeTaken + " s", getScreenX() / 2, 20, paint);
                 canvas.drawText("Shields: " + player.getShields(), 10, getScreenY() - 20, paint);
 
@@ -311,7 +307,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 paint.setColor(Color.CYAN);
                 canvas.drawText("GAME OVER", getScreenX() / 2, 100, paint);
                 paint.setTextSize(25);
-                canvas.drawText("Fastest: " + fastestTime + " s", getScreenX() / 2, 160, paint);
+                canvas.drawText("Longest: " + longestTime + " s", getScreenX() / 2, 160, paint);
                 canvas.drawText("Time: " + timeTaken + " s", getScreenX() / 2, 200, paint);
                 paint.setTextSize(80);
                 canvas.drawText("Tap to continue!", getScreenX() / 2, getScreenY()/2, paint);
