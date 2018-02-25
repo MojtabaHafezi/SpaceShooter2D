@@ -97,8 +97,13 @@
                 android:textSize="36sp" />
         </LinearLayout>
 
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
         <Button
-            android:layout_weight="1"
             android:id="@+id/tutorialButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -110,6 +115,20 @@
             android:text="@string/tutorialText"
             android:textColor="@android:color/background_dark"
             android:textSize="36sp" />
+
+        <Button
+            android:id="@+id/bluetoothButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/yellow_button"
+            android:fontFamily="@font/space"
+            android:paddingTop="0dp"
+            android:text="@string/bluetoothText"
+            android:textColor="@android:color/background_dark"
+            android:textSize="36sp" />
+    </LinearLayout>
 
         <Button
             android:id="@+id/saveButton"

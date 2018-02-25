@@ -1,16 +1,27 @@
 package com.hafezi.games.spaceshooter2d;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothHeadset;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,9 +31,7 @@ public class MainActivity extends AppCompatActivity {
     Button highscoreButton;
     Button exitButton;
     private SoundManager soundManager;
-    //bluetooth
-    private BluetoothAdapter bluetoothAdapter;
-    private Set<BluetoothDevice> pairedDevices;
+    BluetoothAdapter bluetoothAdapter;
 
 
     @Override
@@ -36,24 +45,7 @@ public class MainActivity extends AppCompatActivity {
         highscoreButton = (Button) findViewById(R.id.scoreButton);
         exitButton = (Button) findViewById(R.id.exitButton);
 
-        //activate bluetooth
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        //if device supports bluetooth -> activate if not already on
-        if (! (bluetoothAdapter == null)) {
-            if(!bluetoothAdapter.isEnabled())
-            {
-                Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(turnOn, 0);
-            }
-            pairedDevices = bluetoothAdapter.getBondedDevices();
-            for(BluetoothDevice bluetoothDevice : pairedDevices)
-            {
-                Log.e("DEVICE:",  bluetoothDevice.getName());
-            }
-        }
-
-
-
         //Set the Listeners
         setButtonListeners();
 
@@ -100,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 soundManager.playSound(SoundManager.Sounds.MENU);
                 exitButton.setBackgroundResource(R.drawable.yellow_button);
                 soundManager.releasePlayer();
+                bluetoothAdapter.disable();
                 finish();
             }
         });
@@ -109,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 soundManager.playSound(SoundManager.Sounds.MENU);
                 highscoreButton.setBackgroundResource(R.drawable.yellow_button);
-
                 //start new activity
             }
         });
@@ -133,4 +125,6 @@ public class MainActivity extends AppCompatActivity {
         optionButton.setBackgroundResource(R.drawable.blue_button);
         exitButton.setBackgroundResource(R.drawable.blue_button);
     }
+
+
 }

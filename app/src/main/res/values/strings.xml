@@ -7,4 +7,8 @@
     <string name="optionText">Options</string>
     <string name="enableText">Enabled</string>
     <string name="disabledText">Disabled</string>
+    <string name="title_activity_bluetooth">BluetoothActivity</string>
+    <string name="bluetoothText">Bluetooth</string>
+    <string name="activateText">Enable/Disable</string>
+    <string name="discoverText">Discover</string>
 </resources>

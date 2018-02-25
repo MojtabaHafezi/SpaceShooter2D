@@ -1,5 +1,7 @@
 package com.hafezi.games.spaceshooter2d;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ public class OptionsActivity extends AppCompatActivity {
     Button accelEnableButton;
     Button accelDisableButton;
     Button tutorialButton;
+    Button bluetoothButton;
     Button saveButton;
 
     //Utility
@@ -44,6 +47,7 @@ public class OptionsActivity extends AppCompatActivity {
         accelEnableButton = (Button) findViewById(R.id.accelEnableButton);
         accelDisableButton = (Button) findViewById(R.id.accelDisableButton);
         tutorialButton = (Button) findViewById(R.id.tutorialButton);
+        bluetoothButton = (Button) findViewById(R.id.bluetoothButton);
         saveButton = (Button) findViewById(R.id.saveButton);
         loadData();
         setButtonListeners();
@@ -69,12 +73,23 @@ public class OptionsActivity extends AppCompatActivity {
             }
         });
 
+        bluetoothButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                soundManager.playSound(SoundManager.Sounds.MENU);
+                //save and start new activity
+                saveOptions();
+                Intent i = new Intent(OptionsActivity.this, BluetoothActivity.class);
+                startActivity(i);
+            }
+        });
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 soundManager.playSound(SoundManager.Sounds.MENU);
                 saveOptions();
-                soundManager.releasePlayer();
+                //soundManager.releasePlayer();
                 finish();
             }
         });
