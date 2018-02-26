@@ -34,7 +34,7 @@ public class Enemy extends GameObject {
 
     public void setRandomAttributes() {
         int randomPosition = random.nextInt(getScreenY() - getBitmap().getHeight());
-        int randomSpeed = 2 + random.nextInt(5) ;
+        int randomSpeed = 5 + random.nextInt(5) ;
         int randomShields = 1 + random.nextInt(3);
         setX(getScreenX() + getBitmap().getWidth());
         setY(randomPosition);

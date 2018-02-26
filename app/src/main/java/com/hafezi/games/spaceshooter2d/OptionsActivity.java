@@ -3,11 +3,18 @@ package com.hafezi.games.spaceshooter2d;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PixelFormat;
+import android.media.MediaPlayer;
+import android.widget.MediaController;
+import android.media.session.MediaSession;
+import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.VideoView;
 
 import com.hafezi.games.spaceshooter2d.Utility.Pref;
 
@@ -23,7 +30,8 @@ public class OptionsActivity extends AppCompatActivity {
 
     //Utility
     private SoundManager soundManager;
-
+    private MediaController mediaController;
+     VideoView videoHolder ;
 
     //persistence
     private SharedPreferences sharedPreferences;
@@ -37,7 +45,8 @@ public class OptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
-
+        mediaController = new MediaController(this);
+        videoHolder = new VideoView(OptionsActivity.this);
         sharedPreferences = getSharedPreferences(Pref.GAME.toString(), MODE_PRIVATE);
         editor = sharedPreferences.edit();
         soundManager = SoundManager.getInstance(this);
@@ -52,7 +61,19 @@ public class OptionsActivity extends AppCompatActivity {
         loadData();
         setButtonListeners();
         setButtonStates();
+    }
 
+    private void initialiseView() {
+        soundManager.playMusic();
+        audioEnableButton = (Button) findViewById(R.id.audioEnableButton);
+        audioDisableButton = (Button) findViewById(R.id.audioDisableButton);
+        accelEnableButton = (Button) findViewById(R.id.accelEnableButton);
+        accelDisableButton = (Button) findViewById(R.id.accelDisableButton);
+        tutorialButton = (Button) findViewById(R.id.tutorialButton);
+        bluetoothButton = (Button) findViewById(R.id.bluetoothButton);
+        saveButton = (Button) findViewById(R.id.saveButton);
+        setButtonListeners();
+        setButtonStates();
     }
 
     private void loadData() {
@@ -69,7 +90,29 @@ public class OptionsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 soundManager.playSound(SoundManager.Sounds.MENU);
-                //TODO: Start playing the demo video
+                //getWindow().setFormat(PixelFormat.TRANSLUCENT);
+
+                //with controls
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    videoHolder.setMediaController(mediaController);
+                }
+                Uri video = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.test);
+                videoHolder.setVideoURI(video);
+                setContentView(videoHolder);
+                soundManager.stopMusic();
+                videoHolder.requestFocus();
+                videoHolder.start();
+
+                //when video finishes
+                videoHolder.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        videoHolder.stopPlayback();
+                        videoHolder.clearFocus();
+                        OptionsActivity.this.setContentView(R.layout.activity_options);
+                        initialiseView();
+                    }
+                });
             }
         });
 
@@ -101,6 +144,7 @@ public class OptionsActivity extends AppCompatActivity {
                 soundManager.setMute(false);
                 setButtonStates();
                 soundManager.playSound(SoundManager.Sounds.MENU);
+                soundManager.playMusic();
             }
         });
 
@@ -110,6 +154,7 @@ public class OptionsActivity extends AppCompatActivity {
                 setMute(true);
                 soundManager.setMute(true);
                 setButtonStates();
+                soundManager.stopMusic();
             }
         });
 
@@ -186,9 +231,20 @@ public class OptionsActivity extends AppCompatActivity {
     // If the player hits the back button, quit the app
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            //if quit without saving -> load old data
-            loadData();
-            finish();
+            if(videoHolder.isPlaying())
+            {
+                videoHolder.stopPlayback();
+                videoHolder.clearFocus();
+                OptionsActivity.this.setContentView(R.layout.activity_options);
+                initialiseView();
+            } else
+            {
+                //if quit without saving -> load old data
+                loadData();
+                finish();
+            }
+
+
             return true;
         }
         return false;
