@@ -1,55 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background2"
+    android:orientation="vertical"
     tools:context="com.hafezi.games.spaceshooter2d.BluetoothActivity">
 
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:src="@drawable/bluetooth" />
+
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/bluetooth" />
-
-        <Button
-            android:id="@+id/activateButton"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/blue_button"
-            android:fontFamily="@font/space"
-            android:padding="2dp"
-            android:text="@string/activateText"
-            android:textSize="36sp" />
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/discoverButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/blue_button"
-            android:fontFamily="@font/space"
-            android:text="@string/discoverText"
-            android:textSize="36sp" />
+            <Button
+                android:id="@+id/activateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/blue_button"
+                android:fontFamily="@font/space"
+                android:padding="0dp"
+                android:text="@string/activateText"
+                android:textColor="@android:color/background_dark"
+                android:textSize="36sp" />
+
+            <Button
+                android:id="@+id/discoverButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+
+                android:background="@drawable/blue_button"
+                android:fontFamily="@font/space"
+                android:text="@string/discoverText"
+                android:textColor="@android:color/background_dark"
+                android:textSize="36sp" />
+
+
+            <Button
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark"
+                android:background="@drawable/blue_button"
+                android:fontFamily="@font/space"
+                android:padding="2dp"
+                android:text="@string/exitText"
+                android:textSize="36sp" />
+        </LinearLayout>
 
         <ListView
             android:id="@+id/listView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="100" />
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:textAlignment="center"></ListView>
     </LinearLayout>
-</android.widget.RelativeLayout>
+</android.widget.LinearLayout>

@@ -41,7 +41,7 @@
         <activity
             android:name=".BluetoothActivity"
             android:screenOrientation="sensorLandscape"
-            android:label="@string/title_activity_bluetooth"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
     </application>
 
 </manifest>
