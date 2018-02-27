@@ -40,7 +40,6 @@ public class Enemy extends GameObject {
         setY(randomPosition);
         setSpeed(randomSpeed);
         setShield(randomShields);
-
     }
 
     @Override

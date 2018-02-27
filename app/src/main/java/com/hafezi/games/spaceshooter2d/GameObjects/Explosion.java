@@ -8,7 +8,6 @@ import android.content.Context;
 
 public class Explosion extends GameObject {
 
-
     public Explosion(Context context, int screenX, int screenY, String name, int x, int y)
     {
         setContext(context);
@@ -19,11 +18,16 @@ public class Explosion extends GameObject {
         prepareBitmap(name);
         setWidth(getBitmap().getWidth());
         setHeight(getBitmap().getHeight());
-
     }
 
+    public void setPosition(int x, int y)
+    {
+        setX(x);
+        setY(y);
+    }
     @Override
     public void update() {
+
 
     }
 

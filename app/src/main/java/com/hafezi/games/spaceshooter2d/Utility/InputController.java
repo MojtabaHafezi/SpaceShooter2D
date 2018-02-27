@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 
 import com.hafezi.games.spaceshooter2d.GameObjects.Player;
 import com.hafezi.games.spaceshooter2d.GameView;
+import com.hafezi.games.spaceshooter2d.SoundManager;
 
 import java.util.ArrayList;
 
@@ -82,7 +83,12 @@ public class InputController {
         switch (motionEvent.getAction() & motionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 if (shoot.contains(horizontal, vertical))
+                {
+                    if (player.getLaser().isAvailable())
+                        gameView.getSoundManager().playSound(SoundManager.Sounds.LASER);
                     player.fireLaser();
+
+                }
                 //check if the user presses on the upper half or lower half of the screen
                 if (up.contains(horizontal, vertical)) {
                     player.setMoveUp(true);
@@ -144,7 +150,10 @@ public class InputController {
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 case KeyEvent.KEYCODE_BUTTON_A:
                 case KeyEvent.KEYCODE_BUTTON_X:
+                    if (player.getLaser().isAvailable())
+                        gameView.getSoundManager().playSound(SoundManager.Sounds.LASER);
                     player.fireLaser();
+
                     break;
 
             }

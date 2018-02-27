@@ -12,6 +12,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.input.InputManager;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -20,6 +21,7 @@ import android.view.SurfaceView;
 import com.hafezi.games.spaceshooter2d.GameObjects.Dust;
 import com.hafezi.games.spaceshooter2d.GameObjects.Enemy;
 import com.hafezi.games.spaceshooter2d.GameObjects.Explosion;
+import com.hafezi.games.spaceshooter2d.GameObjects.Laser;
 import com.hafezi.games.spaceshooter2d.GameObjects.Player;
 import com.hafezi.games.spaceshooter2d.Utility.InputController;
 import com.hafezi.games.spaceshooter2d.Utility.Pref;
@@ -43,6 +45,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     //Game objects
     private Player player;
     private Explosion[] explosions;
+    private Explosion quickExplosion;
+    private boolean isExplosionTriggered;
     private Enemy[] enemies;
     private ArrayList<Dust> whiteDusts;
     private ArrayList<Dust> yellowDusts;
@@ -123,8 +127,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         for (int i = 0; i < explosions.length; i++) {
             explosions[i] = new Explosion(getContext(), screenX, screenY, "explosion" + (1 + i), 0, 0);
         }
+        quickExplosion = new Explosion(getContext(), screenX, screenY, "quickexplosion", -1000, -1000);
+        isExplosionTriggered = false;
         timeForExplosion = 0;
-        enemies = new Enemy[3];
+        enemies = new Enemy[6];
         for (int i = 0; i < enemies.length; i++) {
             enemies[i] = new Enemy(getContext(), getScreenX(), getScreenY());
         }
@@ -178,11 +184,12 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 redDust.update();
             }
 
-            //check for collisions
+            //check for collisions between player and enemies
             boolean collisionDetected;
             for (Enemy enemy : enemies) {
                 collisionDetected = collisionDetection(player, enemy);
                 if (collisionDetected) {
+                    isExplosionTriggered = true;
                     if (player.getShields() >= 1) {
                         soundManager.playSound(SoundManager.Sounds.HIT);
                         vibrator.vibrate(200);
@@ -195,9 +202,26 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                             player.setShields(player.getShields() - 1);
 
                     }
+                } else {
+                    isExplosionTriggered = false;
+                }
+                //if laser hits enemy
+                if (!player.getLaser().isAvailable()) {
+                    collisionDetected = collisionWithLaser(player, enemy);
+                    if (collisionDetected) {
+                        player.getLaser().setAvailable(true);
+                        enemy.setShield(enemy.getShield() - 1);
+                        if (enemy.getShield() <= 0) {
+                            quickExplosion.setPosition(enemy.getX() - 5, enemy.getY() + enemy.getHeight() / 2);
+                            enemy.setRandomAttributes();
+                        }
+                        isExplosionTriggered = true;
+                        soundManager.playSound(SoundManager.Sounds.HIT);
+                    } else {
+                        isExplosionTriggered = false;
+                    }
                 }
             }
-
 
             //check for game status
             if (player.getShields() <= 0) {
@@ -254,12 +278,18 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
                 // player
                 canvas.drawBitmap(player.getBitmap(), player.getX(), player.getY(), paint);
+                if (!player.getLaser().isAvailable()) {
+                    Laser laser = player.getLaser();
+                    canvas.drawBitmap(laser.getBitmap(), laser.getX(), laser.getY(), paint);
+                }
                 //enemy objects
                 for (Enemy enemy : enemies) {
                     canvas.drawBitmap(enemy.getBitmap(), enemy.getX(), enemy.getY(), paint);
                 }
+                // draw explosion
+                if (isExplosionTriggered)
+                    canvas.drawBitmap(quickExplosion.getBitmap(), quickExplosion.getX(), quickExplosion.getY(), paint);
 
-                //HUD
                 //HUD
                 paint.setTextAlign(Paint.Align.LEFT);
                 paint.setColor(Color.CYAN);
@@ -348,7 +378,15 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     //checks for intersection between the hitboxes - used in the update method
     private boolean collisionDetection(Player player, Enemy enemy) {
         if (Rect.intersects(player.getHitbox(), enemy.getHitbox())) {
+            quickExplosion.setPosition(player.getX() + 10, player.getY() + player.getHeight() / 2);
             enemy.setRandomAttributes();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean collisionWithLaser(Player player, Enemy enemy) {
+        if (Rect.intersects(player.getLaser().getHitbox(), enemy.getHitbox())) {
             return true;
         }
         return false;
@@ -369,10 +407,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     public void resume() {
         if (sensorManager != null)
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-        /*
-        for (Enemy enemy : enemies)
-            enemy.setRandomAttributes();
-            */
         setPlaying(true);
         timeStarted = System.currentTimeMillis();
         gameThread = new Thread(this);
@@ -470,5 +504,9 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     @Override
     public void onInputDeviceChanged(int i) {
 
+    }
+
+    public SoundManager getSoundManager() {
+        return soundManager;
     }
 }

@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by Mojtaba Hafezi on 19.02.2018.
  */
@@ -14,6 +16,7 @@ public class Player extends GameObject {
     private int shields;
     private boolean moveUp;
     private boolean moveDown;
+    private Laser laser;
 
     public Player(Context context, int startX, int startY, int speed, int screenX, int screenY) {
         setContext(context);
@@ -21,9 +24,9 @@ public class Player extends GameObject {
         setScreenY(screenY);
         setY(startY);
         setSpeed(speed);
-        setShields(2);
+        setShields(10);
         prepareBitmap("player");
-        setX(getBitmap().getWidth()/3);
+        setX(getBitmap().getWidth() / 3);
         setMinY(0);
         setMinX(0);
         setMaxX(screenX - getBitmap().getWidth());
@@ -31,39 +34,42 @@ public class Player extends GameObject {
         setWidth(getBitmap().getWidth());
         setHeight(getBitmap().getHeight());
         setHitbox(new Rect(getX(), getY(), getWidth(), getHeight()));
+        //laser is not visible until shot
+        laser = new Laser(getContext(), getScreenX(), getScreenY(), -1000, -1000);
     }
 
     @Override
     public void update() {
-        if(isMoveDown())
-        {
-            setY(getY()+ getSpeed());
+        laser.update();
+
+        if (isMoveDown()) {
+            setY(getY() + getSpeed());
         }
-        if(isMoveUp())
-        {
+        if (isMoveUp()) {
             setY(getY() - getSpeed());
         }
 
-        if(getY() <= getMinY())
-        {
-           setY(getMinY());
+        if (getY() <= getMinY()) {
+            setY(getMinY());
         }
-        if(getY() >= getMaxY())
-        {
+        if (getY() >= getMaxY()) {
             setY(getMaxY());
         }
 
         //update location of the rectangle collision hitbox with some margin
         getHitbox().left = getX();
-        getHitbox().right = getX() + getBitmap().getWidth() - getBitmap().getWidth()/5;
+        getHitbox().right = getX() + getBitmap().getWidth() - getBitmap().getWidth() / 5;
         getHitbox().top = getY();
-        getHitbox().bottom = getY() + getBitmap().getHeight() - getBitmap().getHeight()/5;
+        getHitbox().bottom = getY() + getBitmap().getHeight() - getBitmap().getHeight() / 5;
+
 
     }
 
-    public void fireLaser()
-    {
-        Log.e("ZOOM", "NEEDS TO BE IMPLEMENTED");
+    public void fireLaser() {
+        if (laser.isAvailable()) {
+            laser.setAvailable(false);
+            laser.setPosition(getX() + getWidth(), getY() + getHeight() / 2);
+        }
     }
 
     public int getShields() {
@@ -89,5 +95,9 @@ public class Player extends GameObject {
 
     public void setMoveDown(boolean moveDown) {
         this.moveDown = moveDown;
+    }
+
+    public Laser getLaser() {
+        return this.laser;
     }
 }
