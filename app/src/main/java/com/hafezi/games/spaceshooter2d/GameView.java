@@ -1,6 +1,8 @@
 package com.hafezi.games.spaceshooter2d;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -253,16 +255,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         } else {
             if (timeForExplosion == 0)
                 timeForExplosion = SystemClock.elapsedRealtime();
-
-
-            //TODO: start new activity, with score as parameter
-            /*
-            Intent i = new Intent(getContext(), MainActivity.class);
-            getContext().startActivity(i);
-            Activity activity = (Activity) getContext();
-            activity.finish();
-            */
-
+            //if player taps on screen again -> event triggers call to new activity
         }
 
     }
@@ -358,6 +351,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
 
                 //GAMEOVER SCREEN
+
                 paint.setTextSize(80);
                 paint.setTextAlign(Paint.Align.CENTER);
                 paint.setColor(Color.CYAN);
@@ -433,10 +427,22 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     //InputController manages events
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (player != null) {
-            inputController.handleTouchInput(event, player);
+        if (!isGameOver()) {
+            if (player != null) {
+                inputController.handleTouchInput(event, player);
+            }
+        } else {
+            startNewActivity();
         }
         return true;
+    }
+
+    private void startNewActivity() {
+        Activity activity = (Activity) getContext();
+        Intent i = new Intent(getContext(), HighScoreActivity.class);
+        activity.finish();
+        getContext().startActivity(i);
+
     }
 
     @Override

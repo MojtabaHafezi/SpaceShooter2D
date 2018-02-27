@@ -41,7 +41,11 @@
         <activity
             android:name=".BluetoothActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".HighScoreActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.AppCompat.NoActionBar" ></activity>
     </application>
 
 </manifest>
