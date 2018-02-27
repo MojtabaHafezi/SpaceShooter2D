@@ -86,6 +86,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        playButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    playButton.setBackgroundResource(R.drawable.red_button);
+                else
+                    playButton.setBackgroundResource(R.drawable.blue_button);
+            }
+        });
+
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,6 +104,16 @@ public class MainActivity extends AppCompatActivity {
                 soundManager.releasePlayer();
                 bluetoothAdapter.disable();
                 finish();
+            }
+        });
+
+        exitButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    exitButton.setBackgroundResource(R.drawable.red_button);
+                else
+                    exitButton.setBackgroundResource(R.drawable.blue_button);
             }
         });
 
@@ -106,6 +126,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        highscoreButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    highscoreButton.setBackgroundResource(R.drawable.red_button);
+                else
+                    highscoreButton.setBackgroundResource(R.drawable.blue_button);
+            }
+        });
 
         optionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,11 +145,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        optionButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    optionButton.setBackgroundResource(R.drawable.red_button);
+                else
+                    optionButton.setBackgroundResource(R.drawable.blue_button);
+            }
+        });
     }
 
 
     private void resetButtons() {
         playButton.setBackgroundResource(R.drawable.blue_button);
+
         highscoreButton.setBackgroundResource(R.drawable.blue_button);
         optionButton.setBackgroundResource(R.drawable.blue_button);
         exitButton.setBackgroundResource(R.drawable.blue_button);

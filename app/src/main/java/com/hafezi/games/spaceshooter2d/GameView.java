@@ -11,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.input.InputManager;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -54,6 +55,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private final int WHITEDUST = 75;
     private final int YELLOWDUST = 45;
     private final int REDDUST = 30;
+    private long enemiesDestroyed;
+    private long score;
 
     //Attributes req. for drawing
     private Canvas canvas;
@@ -116,9 +119,11 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         setPlaying(true);
         lastHit = 0;
         timeTaken = 0;
-        timeStarted = System.currentTimeMillis();
+        timeStarted = SystemClock.elapsedRealtime();
         //Load score and options for sensor
         longestTime = sharedPreferences.getLong(Pref.TIME.toString(), 0);
+        score = sharedPreferences.getLong(Pref.SCORE.toString(), 0);
+        enemiesDestroyed = 0;
         boolean usingSensor = sharedPreferences.getBoolean(Pref.SENSOR.toString(), false);
         setUseSensor(usingSensor);
 
@@ -155,19 +160,21 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     @Override
     public void run() {
         while (isPlaying()) {
-            startFrameTime = System.currentTimeMillis();
-
+            startFrameTime = SystemClock.elapsedRealtime();
             update();
             draw();
             //control the frames per seconds -> if drawing took too long skip sleep call for thread
-            timeThisFrame = System.currentTimeMillis() - startFrameTime;
+            timeThisFrame = SystemClock.elapsedRealtime() - startFrameTime;
             control();
         }
     }
 
     private void update() {
         if (!isGameOver()) {
-            timeTaken += (System.currentTimeMillis() - timeStarted) / 1000; //add the time
+            //if game was paused -> time handled correctly through pause method
+            if (timeStarted != 0)
+                timeTaken += (SystemClock.elapsedRealtime() - timeStarted);
+            timeStarted = SystemClock.elapsedRealtime();
 
             //update game objects
             player.update();
@@ -189,13 +196,14 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             for (Enemy enemy : enemies) {
                 collisionDetected = collisionDetection(player, enemy);
                 if (collisionDetected) {
+                    enemiesDestroyed++;
                     isExplosionTriggered = true;
                     if (player.getShields() >= 1) {
                         soundManager.playSound(SoundManager.Sounds.HIT);
                         vibrator.vibrate(200);
                         //player is immune for 2 sec after a collision but only once
                         if (lastHit == 0) {
-                            lastHit = System.currentTimeMillis();
+                            lastHit = SystemClock.elapsedRealtime();
                             player.setShields(player.getShields() - 1);
                         }
                         if (startFrameTime - lastHit > 2000)
@@ -212,6 +220,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                         player.getLaser().setAvailable(true);
                         enemy.setShield(enemy.getShield() - 1);
                         if (enemy.getShield() <= 0) {
+                            enemiesDestroyed++;
                             quickExplosion.setPosition(enemy.getX() - 5, enemy.getY() + enemy.getHeight() / 2);
                             enemy.setRandomAttributes();
                         }
@@ -232,14 +241,18 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 if (timeTaken > longestTime) {
                     longestTime = timeTaken; //new hi-score
                     editor.putLong(Pref.TIME.toString(), longestTime);
-                    editor.commit();
+
                 }
+                if (enemiesDestroyed > score) {
+                    editor.putLong(Pref.SCORE.toString(), enemiesDestroyed);
+                }
+                editor.commit();
             }
 
 
         } else {
             if (timeForExplosion == 0)
-                timeForExplosion = System.currentTimeMillis();
+                timeForExplosion = SystemClock.elapsedRealtime();
 
 
             //TODO: start new activity, with score as parameter
@@ -297,6 +310,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 canvas.drawText("Longest: " + (int) longestTime / 1000 + " s", 10, 20, paint);
                 canvas.drawText("Time: " + (int) timeTaken / 1000 + " s", getScreenX() / 2, 20, paint);
                 canvas.drawText("Shields: " + player.getShields(), 10, getScreenY() - 20, paint);
+                canvas.drawText("Destroyed: " + enemiesDestroyed, getScreenX() / 2, getScreenY() - 20, paint);
 
 
                 //unlock and post at the end
@@ -351,6 +365,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 paint.setTextSize(25);
                 canvas.drawText("Longest: " + (int) longestTime / 1000 + " s", getScreenX() / 2, 160, paint);
                 canvas.drawText("Time: " + (int) timeTaken / 1000 + " s", getScreenX() / 2, 200, paint);
+                canvas.drawText("Ships destroyed: " + enemiesDestroyed, getScreenX() / 2, 240, paint);
+
                 paint.setTextSize(80);
                 canvas.drawText("Tap to continue!", getScreenX() / 2, getScreenY() / 2, paint);
 
@@ -396,6 +412,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     public void pause() {
         setPlaying(false);
         sensorManager.unregisterListener(this);
+
         try {
             gameThread.join();
         } catch (InterruptedException e) {
@@ -407,8 +424,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     public void resume() {
         if (sensorManager != null)
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        timeStarted = SystemClock.elapsedRealtime();
         setPlaying(true);
-        timeStarted = System.currentTimeMillis();
         gameThread = new Thread(this);
         gameThread.start();
     }

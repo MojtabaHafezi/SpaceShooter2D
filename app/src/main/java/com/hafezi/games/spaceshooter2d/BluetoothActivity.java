@@ -69,7 +69,6 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
         IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(broadCastDiscovery, discoverDevicesIntent);
 
-
     }
 
     private void setButtonListeners() {
@@ -84,6 +83,16 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
             }
         });
 
+        exitButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    exitButton.setBackgroundResource(R.drawable.red_button);
+                else
+                    exitButton.setBackgroundResource(R.drawable.blue_button);
+            }
+        });
+
         activateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,11 +101,31 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
             }
         });
 
+        activateButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    activateButton.setBackgroundResource(R.drawable.red_button);
+                else
+                    activateButton.setBackgroundResource(R.drawable.blue_button);
+            }
+        });
+
         discoverButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 soundManager.playSound(SoundManager.Sounds.MENU);
                 discoverDevices();
+            }
+        });
+
+        discoverButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    discoverButton.setBackgroundResource(R.drawable.red_button);
+                else
+                    discoverButton.setBackgroundResource(R.drawable.blue_button);
             }
         });
 
@@ -257,12 +286,6 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
         String deviceName = bluetoothDevices.get(i).getName();
 
         bluetoothDevices.get(i).createBond();
-        try {
-            Method method = bluetoothDevices.get(i).getClass().getMethod("createBond", (Class[]) null);
-            method.invoke(bluetoothDevices.get(i), (Object[]) null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     //Shows a short toast with given text

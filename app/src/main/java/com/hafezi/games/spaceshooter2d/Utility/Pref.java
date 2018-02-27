@@ -8,7 +8,8 @@ public enum Pref {
     AUDIO("AUDIO"),
     GAME("GAME"),
     TIME("TIME"),
-    SENSOR("SENSOR");
+    SENSOR("SENSOR"),
+    SCORE("SCORE");
 
     private final String text;
 

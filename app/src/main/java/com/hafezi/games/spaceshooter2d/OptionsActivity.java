@@ -116,6 +116,16 @@ public class OptionsActivity extends AppCompatActivity {
             }
         });
 
+        tutorialButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    tutorialButton.setBackgroundResource(R.drawable.red_button);
+                else
+                    tutorialButton.setBackgroundResource(R.drawable.blue_button);
+            }
+        });
+
         bluetoothButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,6 +137,16 @@ public class OptionsActivity extends AppCompatActivity {
             }
         });
 
+        bluetoothButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    bluetoothButton.setBackgroundResource(R.drawable.red_button);
+                else
+                    bluetoothButton.setBackgroundResource(R.drawable.blue_button);
+            }
+        });
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,6 +154,16 @@ public class OptionsActivity extends AppCompatActivity {
                 saveOptions();
                 //soundManager.releasePlayer();
                 finish();
+            }
+        });
+
+        saveButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b)
+                    saveButton.setBackgroundResource(R.drawable.red_button);
+                else
+                    saveButton.setBackgroundResource(R.drawable.blue_button);
             }
         });
 
@@ -158,6 +188,7 @@ public class OptionsActivity extends AppCompatActivity {
             }
         });
 
+
         accelEnableButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,6 +206,7 @@ public class OptionsActivity extends AppCompatActivity {
                 soundManager.playSound(SoundManager.Sounds.MENU);
             }
         });
+
     }
 
     //Set the buttons states depending on the boolean values

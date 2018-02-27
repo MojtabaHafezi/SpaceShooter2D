@@ -24,7 +24,7 @@ public class Player extends GameObject {
         setScreenY(screenY);
         setY(startY);
         setSpeed(speed);
-        setShields(10);
+        setShields(2);
         prepareBitmap("player");
         setX(getBitmap().getWidth() / 3);
         setMinY(0);
