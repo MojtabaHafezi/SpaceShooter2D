@@ -6,8 +6,10 @@ import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 /**
  * Created by Mojtaba Hafezi on 18.02.2018.
@@ -53,12 +55,15 @@ public class GameActivity extends Activity {
         soundManager.playMusic();
     }
 
-    // If the player hits the back button, quit the app
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-            return true;
-        }
-        return false;
+    @Override
+    public boolean dispatchGenericMotionEvent(MotionEvent event) {
+        gameView.handleControllerMotion(event);
+        return super.dispatchGenericMotionEvent(event);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        gameView.handleControllerKeys(event);
+        return super.dispatchKeyEvent(event);
     }
 }

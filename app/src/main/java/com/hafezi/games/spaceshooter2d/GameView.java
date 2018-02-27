@@ -10,7 +10,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.input.InputManager;
 import android.os.Vibrator;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -31,7 +33,7 @@ import static android.content.Context.VIBRATOR_SERVICE;
  */
 
 //View for the main game since everything needs to be drawn on screen
-public class GameView extends SurfaceView implements Runnable, SensorEventListener {
+public class GameView extends SurfaceView implements Runnable, SensorEventListener, InputManager.InputDeviceListener {
 
     //Thread related attributes
     volatile boolean playing;
@@ -76,6 +78,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private boolean useSensor; //needs to be changed in option, saved and loaded properly
     private SensorManager sensorManager;
     private Sensor sensor;
+    private InputManager inputManager;
     //persistence
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -86,6 +89,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
 
     public GameView(Context context, int screenX, int screenY) {
         super(context);
+        inputManager = (InputManager) getContext().getSystemService(Context.INPUT_SERVICE);
         setContext(context);
         setScreenX(screenX);
         setScreenY(screenY);
@@ -97,7 +101,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         vibrator = (Vibrator) getContext().getSystemService(VIBRATOR_SERVICE);
         sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        inputController = new InputController(screenX, screenY);
+        inputController = new InputController(this, screenX, screenY);
 
         initialiseGame();
         resume();
@@ -157,6 +161,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
 
     private void update() {
         if (!isGameOver()) {
+            timeTaken += (System.currentTimeMillis() - timeStarted) / 1000; //add the time
 
             //update game objects
             player.update();
@@ -193,7 +198,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
             }
 
-            timeTaken = System.currentTimeMillis() - timeStarted; //add the time
 
             //check for game status
             if (player.getShields() <= 0) {
@@ -260,8 +264,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 paint.setTextAlign(Paint.Align.LEFT);
                 paint.setColor(Color.CYAN);
                 paint.setTextSize(30);
-                canvas.drawText("Longest: " + (int) longestTime/1000 + " s", 10, 20, paint);
-                canvas.drawText("Time: " + (int) timeTaken/1000 + " s", getScreenX() / 2, 20, paint);
+                canvas.drawText("Longest: " + (int) longestTime / 1000 + " s", 10, 20, paint);
+                canvas.drawText("Time: " + (int) timeTaken / 1000 + " s", getScreenX() / 2, 20, paint);
                 canvas.drawText("Shields: " + player.getShields(), 10, getScreenY() - 20, paint);
 
 
@@ -315,8 +319,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 paint.setColor(Color.CYAN);
                 canvas.drawText("GAME OVER", getScreenX() / 2, 100, paint);
                 paint.setTextSize(25);
-                canvas.drawText("Longest: " + (int) longestTime/1000 + " s", getScreenX() / 2, 160, paint);
-                canvas.drawText("Time: " + (int) timeTaken/1000 + " s", getScreenX() / 2, 200, paint);
+                canvas.drawText("Longest: " + (int) longestTime / 1000 + " s", getScreenX() / 2, 160, paint);
+                canvas.drawText("Time: " + (int) timeTaken / 1000 + " s", getScreenX() / 2, 200, paint);
                 paint.setTextSize(80);
                 canvas.drawText("Tap to continue!", getScreenX() / 2, getScreenY() / 2, paint);
 
@@ -365,9 +369,12 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     public void resume() {
         if (sensorManager != null)
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        /*
         for (Enemy enemy : enemies)
             enemy.setRandomAttributes();
+            */
         setPlaying(true);
+        timeStarted = System.currentTimeMillis();
         gameThread = new Thread(this);
         gameThread.start();
     }
@@ -376,7 +383,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (player != null) {
-            inputController.handleInput(event, player);
+            inputController.handleTouchInput(event, player);
         }
         return true;
     }
@@ -387,6 +394,17 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             inputController.handleSensorInput(sensorEvent, player);
     }
 
+    //GAMEPAD handling
+    public void handleControllerMotion(MotionEvent event) {
+        inputController.handleControllerMotionInput(event, player);
+    }
+
+    public void handleControllerKeys(KeyEvent event) {
+        inputController.handleControllerKeysInput(event, player);
+    }
+
+
+    //Empty - required for Accelerometer
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
@@ -436,5 +454,21 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
 
     public void setUseSensor(boolean useSensor) {
         this.useSensor = useSensor;
+    }
+
+    //for gamepad changes ingame
+    @Override
+    public void onInputDeviceAdded(int i) {
+
+    }
+
+    @Override
+    public void onInputDeviceRemoved(int i) {
+
+    }
+
+    @Override
+    public void onInputDeviceChanged(int i) {
+
     }
 }

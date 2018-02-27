@@ -61,6 +61,11 @@ public class Player extends GameObject {
 
     }
 
+    public void fireLaser()
+    {
+        Log.e("ZOOM", "NEEDS TO BE IMPLEMENTED");
+    }
+
     public int getShields() {
         return shields;
     }
