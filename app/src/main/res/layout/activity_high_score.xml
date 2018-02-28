@@ -18,50 +18,170 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:layout_weight="1"
+            android:layout_weight="10"
             app:srcCompat="@drawable/highscore" />
-
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="50"
-            android:background="@drawable/frame"
-            android:alpha="0.5">
-        </ListView>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="0dp"
             android:orientation="horizontal"
-            android:layout_weight="1">
+            android:padding="0dp">
 
-        <Button
-            android:id="@+id/hsBackButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:background="@drawable/blue_button"
-            android:fontFamily="@font/space"
-            android:text="@string/exitText"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="35sp"
-          />
+            <Button
+                android:id="@+id/hsBackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/blue_button"
+                android:fontFamily="@font/space"
+                android:gravity="center"
+                android:text="@string/exitText"
+                android:textColor="@android:color/black"
+                android:textSize="30sp" />
+
             <Button
                 android:id="@+id/hsPlayButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
+                android:layout_margin="5dp"
                 android:background="@drawable/blue_button"
                 android:fontFamily="@font/space"
-                android:text="@string/playText"
                 android:gravity="center"
+                android:text="@string/playText"
                 android:textColor="@android:color/black"
-                android:textSize="35sp"
-                />
+                android:textSize="30sp" />
         </LinearLayout>
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:alpha="0.5"
+            android:background="@drawable/frame"
+            android:focusable="false"
+            android:focusableInTouchMode="false">
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_margin="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:alpha="255"
+                android:columnCount="2">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+                        android:layout_weight="1"
+                        android:text="TIME"
+                        android:textSize="35sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+
+                        android:layout_weight="1"
+                        android:text="TIME"
+                        android:textSize="35sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+
+                        android:layout_weight="1"
+                        android:text="TIME"
+                        android:textSize="35sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+
+                        android:layout_weight="1"
+                        android:text="TIME"
+                        android:textSize="35sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+
+                        android:layout_weight="1"
+                        android:text="TIME"
+                        android:textSize="35sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+
+                        android:layout_weight="1"
+                        android:text="SHIPS DESTROYED"
+                        android:textSize="35sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+
+
+                        android:layout_weight="1"
+                        android:text="SHIPS DESTROYED"
+                        android:textSize="35sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+
+                        android:layout_weight="1"
+                        android:text="SHIPS DESTROYED"
+                        android:textSize="35sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+
+                        android:layout_weight="1"
+                        android:text="SHIPS DESTROYED"
+                        android:textSize="35sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5sp"
+
+                        android:layout_weight="1"
+                        android:text="SHIPS DESTROYED"
+                        android:textSize="35sp" />
+                </LinearLayout>
+            </GridLayout>
+        </ScrollView>
+
+
 
 
     </LinearLayout>

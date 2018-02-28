@@ -427,17 +427,15 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     //InputController manages events
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!isGameOver()) {
+
             if (player != null) {
                 inputController.handleTouchInput(event, player);
             }
-        } else {
-            startNewActivity();
-        }
+
         return true;
     }
 
-    private void startNewActivity() {
+    public void startNewActivity() {
         Activity activity = (Activity) getContext();
         Intent i = new Intent(getContext(), HighScoreActivity.class);
         activity.finish();

@@ -82,21 +82,27 @@ public class InputController {
 
         switch (motionEvent.getAction() & motionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                if (shoot.contains(horizontal, vertical))
+                if(!gameView.isGameOver())
                 {
-                    if (player.getLaser().isAvailable())
-                        gameView.getSoundManager().playSound(SoundManager.Sounds.LASER);
-                    player.fireLaser();
+                    if (shoot.contains(horizontal, vertical)) {
+                        if (player.getLaser().isAvailable())
+                            gameView.getSoundManager().playSound(SoundManager.Sounds.LASER);
+                        player.fireLaser();
 
+                    }
+                    //check if the user presses on the upper half or lower half of the screen
+                    if (up.contains(horizontal, vertical)) {
+                        player.setMoveUp(true);
+                        player.setMoveDown(false);
+                    } else if (down.contains(horizontal, vertical)) {
+                        player.setMoveDown(true);
+                        player.setMoveUp(false);
+                    }
+                } else {
+
+                    gameView.startNewActivity();
                 }
-                //check if the user presses on the upper half or lower half of the screen
-                if (up.contains(horizontal, vertical)) {
-                    player.setMoveUp(true);
-                    player.setMoveDown(false);
-                } else if (down.contains(horizontal, vertical)) {
-                    player.setMoveDown(true);
-                    player.setMoveUp(false);
-                }
+
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -123,11 +129,15 @@ public class InputController {
                 //pause game
                 case KeyEvent.KEYCODE_BUTTON_START:
                     if (eventAction == KeyEvent.ACTION_DOWN) {
-                        if (gameView.isPlaying())
-                            gameView.pause();
-                        else
-                            gameView.resume();
+                        if (!gameView.isGameOver()) {
+                            if (gameView.isPlaying())
+                                gameView.pause();
+                            else
+                                gameView.resume();
+                        } else
+                            gameView.startNewActivity();
                     }
+
                     break;
                 case KeyEvent.KEYCODE_DPAD_UP:
                     if (eventAction == KeyEvent.ACTION_DOWN) {
@@ -150,10 +160,14 @@ public class InputController {
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 case KeyEvent.KEYCODE_BUTTON_A:
                 case KeyEvent.KEYCODE_BUTTON_X:
-                    if (player.getLaser().isAvailable())
-                        gameView.getSoundManager().playSound(SoundManager.Sounds.LASER);
-                    player.fireLaser();
+                    if(!gameView.isGameOver())
+                    {
+                        if (player.getLaser().isAvailable())
+                            gameView.getSoundManager().playSound(SoundManager.Sounds.LASER);
+                        player.fireLaser();
 
+                    } else
+                        gameView.startNewActivity();
                     break;
 
             }
