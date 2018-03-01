@@ -77,49 +77,6 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5sp"
-                        android:layout_weight="1"
-                        android:text="TIME"
-                        android:textSize="35sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5sp"
-
-                        android:layout_weight="1"
-                        android:text="TIME"
-                        android:textSize="35sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5sp"
-
-                        android:layout_weight="1"
-                        android:text="TIME"
-                        android:textSize="35sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5sp"
-
-                        android:layout_weight="1"
-                        android:text="TIME"
-                        android:textSize="35sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5sp"
-
-                        android:layout_weight="1"
-                        android:text="TIME"
-                        android:textSize="35sp" />
 
                 </LinearLayout>
 
@@ -130,52 +87,6 @@
                     android:layout_margin="10dp"
                     android:gravity="center"
                     android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5sp"
-
-                        android:layout_weight="1"
-                        android:text="SHIPS DESTROYED"
-                        android:textSize="35sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5sp"
-
-
-                        android:layout_weight="1"
-                        android:text="SHIPS DESTROYED"
-                        android:textSize="35sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5sp"
-
-                        android:layout_weight="1"
-                        android:text="SHIPS DESTROYED"
-                        android:textSize="35sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5sp"
-
-                        android:layout_weight="1"
-                        android:text="SHIPS DESTROYED"
-                        android:textSize="35sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5sp"
-
-                        android:layout_weight="1"
-                        android:text="SHIPS DESTROYED"
-                        android:textSize="35sp" />
                 </LinearLayout>
             </GridLayout>
         </ScrollView>

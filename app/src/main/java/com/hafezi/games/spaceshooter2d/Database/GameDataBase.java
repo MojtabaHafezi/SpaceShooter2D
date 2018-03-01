@@ -57,7 +57,7 @@ public class GameDataBase {
 
     public Cursor getScores() {
         Cursor c = db.query(Constants.TABLE_NAME, null, null,
-                null, null, null, Constants.SCORE);
+                null, null, null, Constants.SCORE + " DESC");
         return c;
     }
 }
