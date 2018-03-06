@@ -35,8 +35,8 @@ public class InputController {
 
     public InputController(GameView gameView, int screenWidth, int screenHeight) {
         //divide the android screen into up and down area
-        up = new Rect(0, 0, screenWidth, screenHeight / 2);
-        down = new Rect(0, (screenHeight / 2 - 1), screenWidth, screenHeight);
+        up = new Rect(0, 0, screenWidth / 2, screenHeight / 2);
+        down = new Rect(0, (screenHeight / 2 - 1), screenWidth / 2, screenHeight);
         //right half of the screen activates shooting
         shoot = new Rect(screenWidth / 2, 0, screenWidth, screenHeight);
         this.gameView = gameView;

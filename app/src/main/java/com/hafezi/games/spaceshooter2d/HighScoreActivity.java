@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -127,14 +128,18 @@ public class HighScoreActivity extends AppCompatActivity {
 
     private void setColumns() {
         loadDataFromDB();
+        Typeface type = Typeface.createFromAsset(getAssets(),"space.ttf");
         for (TextView tv : scoreList) {
             tv.setTextColor(Color.BLACK);
             tv.setTextSize(25);
+            tv.setTypeface(type);
             scoreColumn.addView(tv);
         }
+
         for (TextView tv : shipList) {
             tv.setTextColor(Color.BLACK);
             tv.setTextSize(25);
+            tv.setTypeface(type);
             shipsColumn.addView(tv);
         }
     }
