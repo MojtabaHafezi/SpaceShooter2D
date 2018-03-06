@@ -41,10 +41,10 @@ public class GameDataBase {
 
     }
 
-    public long insertScore(int score, int ships) {
+    public long insertScore(int time, int ships) {
         try {
             ContentValues newTaskValue = new ContentValues();
-            newTaskValue.put(Constants.SCORE, score);
+            newTaskValue.put(Constants.SCORE, time);
             newTaskValue.put(Constants.SHIPS,  ships);
 
             return db.insert(Constants.TABLE_NAME, null, newTaskValue);

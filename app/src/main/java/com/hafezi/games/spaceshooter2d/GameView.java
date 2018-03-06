@@ -435,11 +435,14 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         return true;
     }
 
+    //transition to high-score activity and passes the parameters for time and score
     public void startNewActivity() {
         Activity activity = (Activity) getContext();
         Intent i = new Intent(getContext(), HighScoreActivity.class);
+        i.putExtra(Pref.TIME.toString(), (int) (timeTaken / 1000));
+        i.putExtra(Pref.SCORE.toString(), (int) enemiesDestroyed);
         activity.finish();
-        getContext().startActivity(i);
+        activity.startActivity(i);
 
     }
 

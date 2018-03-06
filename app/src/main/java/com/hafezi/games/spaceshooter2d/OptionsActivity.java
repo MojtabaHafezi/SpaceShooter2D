@@ -133,6 +133,7 @@ public class OptionsActivity extends AppCompatActivity {
                 //save and start new activity
                 saveOptions();
                 Intent i = new Intent(OptionsActivity.this, BluetoothActivity.class);
+                finish();
                 startActivity(i);
             }
         });
