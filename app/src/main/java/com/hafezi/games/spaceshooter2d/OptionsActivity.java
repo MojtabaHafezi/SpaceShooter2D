@@ -96,7 +96,8 @@ public class OptionsActivity extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     videoHolder.setMediaController(mediaController);
                 }
-                Uri video = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.test);
+                //get the tutorial video inside the raw folder
+                Uri video = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.tutorial);
                 videoHolder.setVideoURI(video);
                 setContentView(videoHolder);
                 soundManager.stopMusic();
