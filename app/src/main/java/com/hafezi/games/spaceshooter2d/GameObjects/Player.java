@@ -18,6 +18,15 @@ public class Player extends GameObject {
     private boolean moveDown;
     private Laser laser;
 
+    /***************************************************************************************
+     *    @Citation
+     *    Title: Android game programming by example
+     *    Author: Horton John
+     *    Date: 2015
+     *    Code version: 1.0
+     *    Change of original code: Major
+     *    The basic idea for this code was acquired through reading the mentioned book
+     ***************************************************************************************/
     public Player(Context context, int startX, int startY, int speed, int screenX, int screenY) {
         setContext(context);
         setScreenX(screenX);

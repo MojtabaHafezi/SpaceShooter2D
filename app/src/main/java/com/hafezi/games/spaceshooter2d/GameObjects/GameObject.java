@@ -12,6 +12,17 @@ import java.util.Random;
 /**
  * Created by Mojtaba Hafezi on 19.02.2018.
  */
+
+/***************************************************************************************
+ *    @Citation
+ *    Title: Android game programming by example
+ *    Author: Horton John
+ *    Date: 2015
+ *    Code version: 1.0
+ *    Change of original code: Minor
+ *    The basic idea for this code was acquired through reading the mentioned book
+ ***************************************************************************************/
+
 //Basic class for all game objects
 public abstract class GameObject {
 

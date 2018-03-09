@@ -124,6 +124,18 @@ public class OptionsActivity extends AppCompatActivity {
     *   is implemented into the tutorial button.
     *   Otherwise the following lines of code are similar to main activity
     */
+
+    /***************************************************************************************
+     *    @Citation
+     *    Title: VideoView
+     *    Author: Google LLC
+     *    Date: 2018
+     *    Code version: 1.0
+     *    Change of original code: Major
+     *    Original idea for: displaying the video view
+     *    Available at: https://developer.android.com/reference/android/widget/VideoView.html
+     *    Last access: 09.03.2018
+     ***************************************************************************************/
     private void setButtonListeners() {
 
         tutorialButton.setOnClickListener(new View.OnClickListener() {

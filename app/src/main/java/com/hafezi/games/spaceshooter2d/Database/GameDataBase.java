@@ -11,7 +11,15 @@ import android.util.Log;
 /**
  * Created by Mojtaba Hafezi on 28.02.2018.
  */
-
+/***************************************************************************************
+ *    @Citation
+ *    Title: The Android Developer’s Cookbook
+ *    Author: Steele, James; To, Nelson
+ *    Date: 2011
+ *    Code version: 1.0
+ *    Change of original code: Major
+ *    Original idea for: creating the database and utility classes
+ ***************************************************************************************/
 public class GameDataBase {
     private SQLiteDatabase db;
     private final Context context;

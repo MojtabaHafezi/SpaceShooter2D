@@ -9,11 +9,21 @@ import java.util.Random;
  * Created by Mojtaba Hafezi on 21.02.2018.
  */
 
+
 public class Enemy extends GameObject {
 
     private Random random;
     private int shield;
 
+    /***************************************************************************************
+     *    @Citation
+     *    Title: Android game programming by example
+     *    Author: Horton John
+     *    Date: 2015
+     *    Code version: 1.0
+     *    Change of original code: Major
+     *    The basic idea for this code was acquired through reading the mentioned book
+     ***************************************************************************************/
     public Enemy(Context context, int screenX, int screenY) {
         random = new Random();
         setContext(context);

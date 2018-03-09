@@ -16,6 +16,17 @@ import java.io.IOException;
 /**
  * Created by Mojtaba Hafezi on 18.02.2018.
  */
+
+/***************************************************************************************
+ *    @Citation
+ *    Title: Mastering Android Game Development
+ *    Author: Portales Raul
+ *    Date: 2015
+ *    Code version: 1.0
+ *    Change of original code: Major
+ *    Original idea for: Sound pool and sound loading
+ ***************************************************************************************/
+
 // The SoundManager needs to be accessible from all other activities -> singleton design pattern
 public class SoundManager {
     //the instance every other class will access

@@ -28,6 +28,18 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
 
+
+/***************************************************************************************
+ *    @Citation
+ *    Title: Bluetooth
+ *    Author: Google LLC
+ *    Date: 2018
+ *    Code version: 1.0
+ *    Change of original code: Major
+ *    Original idea for: Enabling BT, Searching for devices and connection
+ *    Available at: https://developer.android.com/guide/topics/connectivity/bluetooth.html
+ *    Last access: 09.03.2018
+ ***************************************************************************************/
 public class BluetoothActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     Button exitButton;

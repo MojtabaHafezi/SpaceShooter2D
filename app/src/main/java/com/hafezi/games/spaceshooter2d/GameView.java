@@ -34,6 +34,17 @@ import static android.content.Context.VIBRATOR_SERVICE;
 /**
  * Created by Mojtaba Hafezi on 18.02.2018.
  */
+
+/***************************************************************************************
+ *    @Citation
+ *    Title: Android game programming by example
+ *    Author: Horton John
+ *    Date: 2015
+ *    Code version: 1.0
+ *    Change of original code: Major
+ *    Original idea for: game loop, collision detection, draw calls
+ ***************************************************************************************/
+
 //View for the main game since everything needs to be drawn on screen
 //Extends SurfaceView for drawing on its own thread
 public class GameView extends SurfaceView implements Runnable, SensorEventListener {
