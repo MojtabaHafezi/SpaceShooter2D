@@ -16,24 +16,28 @@ import java.io.IOException;
 /**
  * Created by Mojtaba Hafezi on 18.02.2018.
  */
-//using the Singleton pattern
+// The SoundManager needs to be accessible from all other activities -> singleton design pattern
 public class SoundManager {
+    //the instance every other class will access
     private static SoundManager instance;
     private Context context;
+    //classes required for sound and music
     private SoundPool soundPool;
     private MediaPlayer mediaPlayer;
-    //keep track where mediaplayer stopped
+    //keep track where mediaplayer stopped to continue whenever the game is paused
     private int length;
     private boolean mute;
+
+    // ids for the sound effects - will be loaded upon instantiation of the class
     int menu = -1;
     int explosion = -1;
     int hit = -1;
     int laser = -1;
 
-    //persistence
+    //persistence - gets the mute value
     private SharedPreferences sharedPreferences;
 
-    //enum for the sounds
+    //enum for the sound effects
     public enum Sounds {
         MENU, EXPLOSION, HIT, LASER
     }
@@ -44,9 +48,11 @@ public class SoundManager {
         sharedPreferences = context.getSharedPreferences(Pref.GAME.toString(), context.MODE_PRIVATE);
         boolean toMute = sharedPreferences.getBoolean(Pref.AUDIO.toString(), false);
         setMute(toMute);
+        //loads all sound effects so it can play them whenever required
         loadSound(context);
     }
 
+    //returns the actual instance - only one instance of this class will be available
     public static SoundManager getInstance(Context context) {
         if (instance == null) {
             instance = new SoundManager(context);
@@ -75,10 +81,9 @@ public class SoundManager {
         }
         //Media
         mediaPlayer = MediaPlayer.create(context, R.raw.ambient);
-
     }
 
-
+    //if sound is enabled then the sound effect is played once
     public void playSound(Sounds sound) {
         if (isMute())
             return;
@@ -99,19 +104,22 @@ public class SoundManager {
 
     }
 
+    //if sound is enabled the music will be played in a loop
     public void playMusic() {
         if (isMute())
             return;
+        //use of media player is recommended by Google instead of sound pool for ambient music
         if (mediaPlayer == null || !mediaPlayer.isPlaying()) {
             mediaPlayer = MediaPlayer.create(this.context, R.raw.ambient);
             mediaPlayer.setLooping(true);
+            //if the music was stopped before - continue
             if (length > 0) {
                 mediaPlayer.seekTo(length);
             }
             mediaPlayer.start();
         }
     }
-
+    //should the music be paused then the current position will be stored
     public void stopMusic() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
@@ -119,7 +127,7 @@ public class SoundManager {
         } else
             length = 0;
     }
-
+    //the media player needs to be released once the application is about to exit
     public void releasePlayer() {
         if (mediaPlayer != null) {
             mediaPlayer.release();

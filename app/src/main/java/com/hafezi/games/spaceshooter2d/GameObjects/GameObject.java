@@ -15,12 +15,16 @@ import java.util.Random;
 //Basic class for all game objects
 public abstract class GameObject {
 
+    //the sprite's width and height
     private int width;
     private int height;
+    // the sprite
     private Bitmap bitmap;
     private Context context;
 
+    //current position
     private int x, y;
+    //limits on screen
     private int minY, maxY;
     private int minX, maxX;
     private int screenX, screenY;
@@ -29,11 +33,10 @@ public abstract class GameObject {
     //collision box
     private Rect hitbox;
     private int speed;
-
+    //all objects should have this method
     public abstract void update();
 
     //GETTERS AND SETTERS
-
 
     public int getWidth() {
         return width;
@@ -135,6 +138,7 @@ public abstract class GameObject {
         this.speed = speed;
     }
 
+    //prepares the bitmap by getting the identifier from the resources
     public void prepareBitmap(String bitmapName) {
         int resourceId = getContext().getResources().getIdentifier(bitmapName, "drawable", getContext().getPackageName());
         Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resourceId);
@@ -158,6 +162,7 @@ public abstract class GameObject {
         this.screenX = screenX;
     }
 
+    //this method could have helped balancing the game play on different screen resolutions
     //content scaling depending on different resolutions. Pixelated outcome is bad but acceptable
     private void scaleBitmap() {
         int divider = 100;

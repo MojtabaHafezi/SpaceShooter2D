@@ -35,12 +35,12 @@ public class GameDataBase {
             db = dbhelper.getReadableDatabase();
         }
     }
-
+    //get the readable database in case no permission is granted for the writable
     public void openReadable() {
         db = dbhelper.getReadableDatabase();
-
     }
 
+    //insers the given values into the corresponding table
     public long insertScore(int time, int ships) {
         try {
             ContentValues newTaskValue = new ContentValues();
@@ -55,6 +55,7 @@ public class GameDataBase {
         }
     }
 
+    //returns a cursor with the sorted query
     public Cursor getScores() {
         Cursor c = db.query(Constants.TABLE_NAME, null, null,
                 null, null, null, Constants.SCORE + " DESC");

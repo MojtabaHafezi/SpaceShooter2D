@@ -23,17 +23,14 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //DETECT SCREEN RESOLUTION
+        //Detect the screen resolution and pass it on as point
         Display display = getWindowManager().getDefaultDisplay();
         Point point = new Point();
         display.getSize(point);
+        gameView = new GameView(GameActivity.this, point.x, point.y);
+        setContentView(gameView);
         soundManager = SoundManager.getInstance(this);
         soundManager.playMusic();
-
-
-        gameView = new GameView(GameActivity.this, point.x, point.y);
-        //setContentView(R.layout.activity_game);
-        setContentView(gameView);
     }
 
     @Override
@@ -55,6 +52,8 @@ public class GameActivity extends Activity {
         soundManager.playMusic();
     }
 
+    //The events for the game controllers need to be registered in the activity
+    //These are passed down to the gameView
     @Override
     public boolean dispatchGenericMotionEvent(MotionEvent event) {
         gameView.handleControllerMotion(event);

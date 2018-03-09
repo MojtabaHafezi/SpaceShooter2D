@@ -31,11 +31,14 @@ public class HighScoreActivity extends AppCompatActivity {
 
     private Button exitButton;
     private Button playButton;
+    //High score relevant items
+    //the text views are created on the run and passed to the layouts
     private LinearLayout scoreColumn;
     private LinearLayout shipsColumn;
-    private SoundManager soundManager;
     private ArrayList<TextView> scoreList;
     private ArrayList<TextView> shipList;
+    //utility
+    private SoundManager soundManager;
 
     //Database
     private GameDataBase gameDataBase;
@@ -46,7 +49,6 @@ public class HighScoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_score);
         gameDataBase = new GameDataBase(this);
-
         scoreList = new ArrayList<>();
         shipList = new ArrayList<>();
 
@@ -66,7 +68,7 @@ public class HighScoreActivity extends AppCompatActivity {
         shipsColumn = (LinearLayout) findViewById(R.id.shipsColumn);
         exitButton = (Button) findViewById(R.id.hsBackButton);
         playButton = (Button) findViewById(R.id.hsPlayButton);
-
+        //this method loads the data from the db and sets the linear layouts of the view
         setColumns();
         setButtonListener();
     }
@@ -79,8 +81,6 @@ public class HighScoreActivity extends AppCompatActivity {
                 soundManager.playSound(SoundManager.Sounds.MENU);
                // Intent i = new Intent(HighScoreActivity.this, MainActivity.class);
                 finish();
-
-
             }
         });
 
@@ -94,7 +94,6 @@ public class HighScoreActivity extends AppCompatActivity {
             }
         });
 
-
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,7 +102,6 @@ public class HighScoreActivity extends AppCompatActivity {
                 Intent i = new Intent(HighScoreActivity.this, GameActivity.class);
                 finish();
                 startActivity(i);
-
             }
         });
 
@@ -118,6 +116,7 @@ public class HighScoreActivity extends AppCompatActivity {
         });
     }
 
+    //returns the id - if it worked, else -1
     private long saveToDB(int score, int ships) {
         long id = -1;
         gameDataBase.openWritable();
@@ -126,6 +125,7 @@ public class HighScoreActivity extends AppCompatActivity {
         return id;
     }
 
+    //Loads the data and also sets the text views with specific attributes
     private void setColumns() {
         loadDataFromDB();
         Typeface type = Typeface.createFromAsset(getAssets(),"space.ttf");
@@ -144,11 +144,12 @@ public class HighScoreActivity extends AppCompatActivity {
         }
     }
 
+    //Requires readable access to db and loads the data as text views into the array lists
     public void loadDataFromDB() {
         gameDataBase.openReadable();
         Cursor c = gameDataBase.getScores();
+        //counter keeps track of which position the entry is since the getScore() method is sorted
         int counter = 0;
-        //startManagingCursor(c);
         if (c.moveToFirst()) {
             do {
                 counter++;
@@ -163,11 +164,9 @@ public class HighScoreActivity extends AppCompatActivity {
                 tv2.setText(ships);
                 scoreList.add(tv);
                 shipList.add(tv2);
-
             } while (c.moveToNext());
         }
         gameDataBase.close();
-
     }
 
     @Override

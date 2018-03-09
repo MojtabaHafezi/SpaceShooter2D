@@ -35,7 +35,7 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
     Button discoverButton;
 
     private SoundManager soundManager;
-    //bluetooth
+    //bluetooth utilities
     private BluetoothAdapter bluetoothAdapter;
     private Set<BluetoothDevice> pairedDevices;
     public ArrayList<BluetoothDevice> bluetoothDevices = new ArrayList<>();
@@ -47,7 +47,6 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
-
         soundManager = SoundManager.getInstance(this);
         soundManager.playMusic();
         exitButton = (Button) findViewById(R.id.backButton);
@@ -69,6 +68,49 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
         IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(broadCastDiscovery, discoverDevicesIntent);
 
+    }
+
+    private void activateBluetooth() {
+        //if device supports bluetooth -> activate if not already on
+        if (!(bluetoothAdapter == null)) {
+            if (!bluetoothAdapter.isEnabled()) {
+                // start intent and register the broadcast for activation
+                Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(turnOn, 0);
+                IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+                registerReceiver(broadCastActivation, intentFilter);
+
+            } else {
+                bluetoothAdapter.disable();
+
+                IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+                registerReceiver(broadCastActivation, intentFilter);
+            }
+        }
+    }
+
+
+    private void discoverDevices() {
+        if (!bluetoothAdapter.isEnabled())
+            activateBluetooth();
+
+        if (bluetoothAdapter.isDiscovering()) {
+            //if it is already discovering - cancel and restart
+            bluetoothAdapter.cancelDiscovery();
+            bluetoothAdapter.startDiscovery();
+            //Broadcast when discovering new devices
+            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            registerReceiver(broadCastDiscovery, discoverDevicesIntent);
+            showShortToast(getBaseContext(), "Searching for devices...");
+
+        } else {
+            bluetoothAdapter.startDiscovery();
+            //Broadcast when discovering new devices
+            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            registerReceiver(broadCastDiscovery, discoverDevicesIntent);
+            showShortToast(getBaseContext(), "Searching for devices...");
+
+        }
     }
 
     private void setButtonListeners() {
@@ -159,124 +201,6 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
         soundManager.playMusic();
     }
 
-    private void activateBluetooth() {
-        //if device supports bluetooth -> activate if not already on
-        if (!(bluetoothAdapter == null)) {
-            if (!bluetoothAdapter.isEnabled()) {
-                Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(turnOn, 0);
-
-                IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-                registerReceiver(broadCastActivation, intentFilter);
-
-            } else {
-                bluetoothAdapter.disable();
-
-                IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-                registerReceiver(broadCastActivation, intentFilter);
-            }
-        }
-    }
-
-
-    private void discoverDevices() {
-        if (!bluetoothAdapter.isEnabled())
-            activateBluetooth();
-
-        if (bluetoothAdapter.isDiscovering()) {
-            //if it is already discovering - cancel and restart
-            bluetoothAdapter.cancelDiscovery();
-            bluetoothAdapter.startDiscovery();
-            //Broadcast when discovering new devices
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            registerReceiver(broadCastDiscovery, discoverDevicesIntent);
-            showShortToast(getBaseContext(), "Searching for devices...");
-
-        } else {
-            bluetoothAdapter.startDiscovery();
-            //Broadcast when discovering new devices
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            registerReceiver(broadCastDiscovery, discoverDevicesIntent);
-            showShortToast(getBaseContext(), "Searching for devices...");
-
-        }
-    }
-
-    //Broadcast receiver for discovering
-    private final BroadcastReceiver broadCastDiscovery = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-
-            if (action.equals(BluetoothDevice.ACTION_FOUND)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (!bluetoothDevices.contains(device))
-                    bluetoothDevices.add(device);
-                updateList(context);
-            }
-        }
-    };
-
-    //Broadcast receiver for pairing
-    private final BroadcastReceiver broadCastPairing = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-
-            if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
-                BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-                if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    showShortToast(context, "Bluetooth pairing finished.");
-                }
-                //case2: creating a bone
-                if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    showShortToast(context, "Pairing...");
-                }
-            }
-        }
-    };
-
-    //Broadcast receiver for enabling/disabling BT
-    private final BroadcastReceiver broadCastActivation = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            // When discovery finds a device
-            if (action.equals(bluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-
-                switch (state) {
-                    case BluetoothAdapter.STATE_OFF:
-                        //disabled bluetooth -> no devices
-                        showShortToast(context, "Bluetooth disabled.");
-                        //get paired device
-                        bluetoothDevices.clear();
-                        updateList(getBaseContext());
-                        break;
-                    case BluetoothAdapter.STATE_ON:
-                        //enabled bluetooth -> show devices
-                        showShortToast(context, "Bluetooth enabled.");
-                        //get paired device
-                        bluetoothDevices.clear();
-                        pairedDevices = bluetoothAdapter.getBondedDevices();
-                        for (BluetoothDevice bluetoothDevice : pairedDevices) {
-                            bluetoothDevices.add(bluetoothDevice);
-                        }
-                        updateList(getBaseContext());
-                        break;
-                        /* not required for this project
-                        case BluetoothAdapter.STATE_TURNING_OFF:
-                        Log.e("BT", "mBroadcastReceiver1: STATE TURNING OFF");
-                        break;
-                        case BluetoothAdapter.STATE_TURNING_ON:
-                        Log.e("BT", "mBroadcastReceiver1: STATE TURNING ON");
-                        break;
-                        */
-                }
-            }
-        }
-    };
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         //Cancel discovery to save energy
@@ -284,7 +208,7 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
 
         showShortToast(getBaseContext(), "Bluetooth enabled.");
         String deviceName = bluetoothDevices.get(i).getName();
-
+        //After creating the bond the connection needs to be created - TODO: Get it working
         bluetoothDevices.get(i).createBond();
     }
 
@@ -312,5 +236,72 @@ public class BluetoothActivity extends AppCompatActivity implements AdapterView.
         }
         finish();
     }
+
+
+    //BROADCASTS
+    //Broadcast receiver for discovering
+    private final BroadcastReceiver broadCastDiscovery = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (action.equals(BluetoothDevice.ACTION_FOUND)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if (!bluetoothDevices.contains(device))
+                    bluetoothDevices.add(device);
+                updateList(context);
+            }
+        }
+    };
+
+    //Broadcast receiver for pairing
+    private final BroadcastReceiver broadCastPairing = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                //case: created a bond
+                if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    showShortToast(context, "Bluetooth pairing finished.");
+                }
+                //case: creating a bond
+                if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+                    showShortToast(context, "Pairing...");
+                }
+            }
+        }
+    };
+
+    //Broadcast receiver for enabling/disabling BT
+    private final BroadcastReceiver broadCastActivation = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (action.equals(bluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        //disabled bluetooth -> no devices
+                        showShortToast(context, "Bluetooth disabled.");
+                        //get paired device
+                        bluetoothDevices.clear();
+                        updateList(getBaseContext());
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        //enabled bluetooth -> show devices
+                        showShortToast(context, "Bluetooth enabled.");
+                        //get paired device
+                        bluetoothDevices.clear();
+                        pairedDevices = bluetoothAdapter.getBondedDevices();
+                        for (BluetoothDevice bluetoothDevice : pairedDevices) {
+                            bluetoothDevices.add(bluetoothDevice);
+                        }
+                        updateList(getBaseContext());
+                        break;
+                }
+            }
+        }
+    };
+
 
 }

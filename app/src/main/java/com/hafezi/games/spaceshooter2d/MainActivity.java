@@ -31,26 +31,31 @@ public class MainActivity extends AppCompatActivity {
     Button highscoreButton;
     Button exitButton;
     private SoundManager soundManager;
-    BluetoothAdapter bluetoothAdapter;
+    private BluetoothAdapter bluetoothAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //get the bluetooth adapter -> on quit disable bluetooth
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        //set the instance of the soundManager
         soundManager = SoundManager.getInstance(this);
         soundManager.playMusic();
+
+        //get the buttons
         playButton = (Button) findViewById(R.id.playButton);
         optionButton = (Button) findViewById(R.id.optionButton);
         highscoreButton = (Button) findViewById(R.id.scoreButton);
         exitButton = (Button) findViewById(R.id.exitButton);
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        //Set the Listeners
+        //Set the Listeners for the buttons
         setButtonListeners();
 
     }
 
+    //play the music if the application continues
     @Override
     protected void onResume() {
         super.onResume();
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         resetButtons();
     }
 
+    // pause the music as well
     @Override
     protected void onPause() {
         super.onPause();
@@ -75,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    /*the listeners for change of focus and onClick are set here accordingly
+    // the soundManager is used to play the corresponding sound effects
+    // the exit button additionally disables the bluetooth and released the media player
+    */
     private void setButtonListeners() {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,9 +169,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //simple method to reset all buttons to their initial background
     private void resetButtons() {
         playButton.setBackgroundResource(R.drawable.blue_button);
-
         highscoreButton.setBackgroundResource(R.drawable.blue_button);
         optionButton.setBackgroundResource(R.drawable.blue_button);
         exitButton.setBackgroundResource(R.drawable.blue_button);

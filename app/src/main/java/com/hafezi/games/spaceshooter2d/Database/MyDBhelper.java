@@ -12,6 +12,7 @@ import android.util.Log;
 
 public class MyDBhelper extends SQLiteOpenHelper {
 
+    //used when database is created or updated
     private static final String CREATE_TABLE = "create table " +
             Constants.TABLE_NAME + " (" +
             Constants.KEY_ID + " integer primary key autoincrement, " +

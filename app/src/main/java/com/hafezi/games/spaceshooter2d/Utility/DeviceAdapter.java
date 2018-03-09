@@ -18,6 +18,7 @@ import java.util.ArrayList;
  * Created by Mojtaba Hafezi on 25.02.2018.
  */
 
+//This class is required so that BluetoothDevices can be used in the ListView
 public class DeviceAdapter extends ArrayAdapter<BluetoothDevice> {
 
     private ArrayList<BluetoothDevice> devices;

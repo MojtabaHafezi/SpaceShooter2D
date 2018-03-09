@@ -31,7 +31,7 @@ public class OptionsActivity extends AppCompatActivity {
     //Utility
     private SoundManager soundManager;
     private MediaController mediaController;
-     VideoView videoHolder ;
+    private VideoView videoHolder;
 
     //persistence
     private SharedPreferences sharedPreferences;
@@ -45,12 +45,15 @@ public class OptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+        //get utility instances
         mediaController = new MediaController(this);
         videoHolder = new VideoView(OptionsActivity.this);
-        sharedPreferences = getSharedPreferences(Pref.GAME.toString(), MODE_PRIVATE);
-        editor = sharedPreferences.edit();
         soundManager = SoundManager.getInstance(this);
         soundManager.playMusic();
+        //get the values for the options
+        sharedPreferences = getSharedPreferences(Pref.GAME.toString(), MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        //find buttons
         audioEnableButton = (Button) findViewById(R.id.audioEnableButton);
         audioDisableButton = (Button) findViewById(R.id.audioDisableButton);
         accelEnableButton = (Button) findViewById(R.id.accelEnableButton);
@@ -58,11 +61,13 @@ public class OptionsActivity extends AppCompatActivity {
         tutorialButton = (Button) findViewById(R.id.tutorialButton);
         bluetoothButton = (Button) findViewById(R.id.bluetoothButton);
         saveButton = (Button) findViewById(R.id.saveButton);
+        //load the data and set the button listeners and their states
         loadData();
         setButtonListeners();
         setButtonStates();
     }
 
+    //is used to bring the default state of the option screen back after the video is played
     private void initialiseView() {
         soundManager.playMusic();
         audioEnableButton = (Button) findViewById(R.id.audioEnableButton);
@@ -76,6 +81,7 @@ public class OptionsActivity extends AppCompatActivity {
         setButtonStates();
     }
 
+    //loads the boolean values from the shared preferences
     private void loadData() {
         boolean isMute = sharedPreferences.getBoolean(Pref.AUDIO.toString(), false);
         setUsingSensor(sharedPreferences.getBoolean(Pref.SENSOR.toString(), false));
@@ -83,28 +89,61 @@ public class OptionsActivity extends AppCompatActivity {
         soundManager.setMute(isMute());
     }
 
+    // private method to save data using shared preferences
+    private void saveOptions() {
+        editor.putBoolean(Pref.SENSOR.toString(), isUsingSensor());
+        editor.putBoolean(Pref.AUDIO.toString(), isMute());
+        editor.commit();
+    }
 
+
+    // If the player hits the back button while video is playing leads to closing the video player
+    // Should it already been closed then the changed data (boolean values) are discarded
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (videoHolder.isPlaying()) {
+                videoHolder.stopPlayback();
+                videoHolder.clearFocus();
+                OptionsActivity.this.setContentView(R.layout.activity_options);
+                initialiseView();
+            } else {
+                //if quit without saving -> load old data
+                loadData();
+                finish();
+            }
+
+
+            return true;
+        }
+        return false;
+    }
+
+
+    /*
+    *   Setting the focus to the video holder and reinitialising the content view to default
+    *   is implemented into the tutorial button.
+    *   Otherwise the following lines of code are similar to main activity
+    */
     private void setButtonListeners() {
 
         tutorialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 soundManager.playSound(SoundManager.Sounds.MENU);
-                //getWindow().setFormat(PixelFormat.TRANSLUCENT);
-
-                //with controls
+                //with controls if the apk allows it
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     videoHolder.setMediaController(mediaController);
                 }
                 //get the tutorial video inside the raw folder
                 Uri video = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.tutorial);
                 videoHolder.setVideoURI(video);
+                //change content of the activity
                 setContentView(videoHolder);
                 soundManager.stopMusic();
                 videoHolder.requestFocus();
                 videoHolder.start();
 
-                //when video finishes
+                //when video finishes the content is set back to the right layout and set to default state
                 videoHolder.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
@@ -211,7 +250,7 @@ public class OptionsActivity extends AppCompatActivity {
 
     }
 
-    //Set the buttons states depending on the boolean values
+    //Set the buttons states depending on the boolean values - changes alpha value for transparency
     private void setButtonStates() {
         if (isMute()) {
             audioDisableButton.setBackgroundResource(R.drawable.blue_button);
@@ -238,17 +277,6 @@ public class OptionsActivity extends AppCompatActivity {
         }
     }
 
-    private void saveOptions() {
-        editor.putBoolean(Pref.SENSOR.toString(), isUsingSensor());
-        editor.putBoolean(Pref.AUDIO.toString(), isMute());
-        editor.commit();
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
     @Override
     protected void onPause() {
@@ -260,28 +288,6 @@ public class OptionsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         soundManager.playMusic();
-    }
-
-    // If the player hits the back button, quit the app
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(videoHolder.isPlaying())
-            {
-                videoHolder.stopPlayback();
-                videoHolder.clearFocus();
-                OptionsActivity.this.setContentView(R.layout.activity_options);
-                initialiseView();
-            } else
-            {
-                //if quit without saving -> load old data
-                loadData();
-                finish();
-            }
-
-
-            return true;
-        }
-        return false;
     }
 
 
